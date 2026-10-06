@@ -1,0 +1,204 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<div class="profile-page-wrapper">
+
+  <!-- ── Hero Banner ── -->
+  <div class="profile-hero">
+    <div class="profile-hero-overlay"></div>
+    <div class="profile-hero-content content-container">
+      <!-- Avatar -->
+      <div class="profile-avatar-ring">
+        <% if (user.profileImageUrl) { %>
+          <img src="<%= user.profileImageUrl %>" alt="<%= user.fullName || user.username %>" class="profile-avatar-img" />
+        <% } else { %>
+          <div class="profile-avatar-letter">
+            <%= (user.fullName || user.username).charAt(0).toUpperCase() %>
+          </div>
+        <% } %>
+        <% if (currUser && currUser.id === user.id) { %>
+          <a href="/profile/edit" class="profile-avatar-edit-btn" title="Edit profile">
+            <i class="fa-solid fa-camera"></i>
+          </a>
+        <% } %>
+      </div>
+
+      <!-- Identity -->
+      <div class="profile-hero-identity">
+        <h1 class="profile-hero-name"><%= user.fullName || user.username %></h1>
+        <p class="profile-hero-username">@<%= user.username %></p>
+        <div class="profile-hero-badges">
+          <% if (user.role === 'admin') { %>
+            <span class="profile-role-badge badge-admin"><i class="fa-solid fa-shield-halved me-1"></i>Admin</span>
+          <% } else if (user.isHost || user.role === 'host') { %>
+            <span class="profile-role-badge badge-host"><i class="fa-solid fa-circle-check me-1"></i>Verified Host</span>
+          <% } else { %>
+            <span class="profile-role-badge badge-guest"><i class="fa-regular fa-user me-1"></i>Guest</span>
+          <% } %>
+          <% if (userListings && userListings.length > 0) { %>
+            <span class="profile-stat-pill"><i class="fa-regular fa-building me-1"></i><%= userListings.length %> Listing<%= userListings.length > 1 ? 's' : '' %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <% if (currUser && currUser.id === user.id) { %>
+        <a href="/profile/edit" class="btn profile-edit-btn">
+          <i class="fa-solid fa-user-pen me-2"></i>Edit Profile
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- ── Page Body ── -->
+  <div class="content-container profile-body">
+    <div class="profile-grid">
+
+      <!-- ── Left Sidebar ── -->
+      <aside class="profile-sidebar">
+
+        <!-- Contact Card -->
+        <div class="profile-card">
+          <h3 class="profile-card-title"><i class="fa-regular fa-address-card me-2"></i>Contact Info</h3>
+          <ul class="profile-info-list">
+            <li class="profile-info-item">
+              <span class="profile-info-icon"><i class="fa-regular fa-envelope"></i></span>
+              <div>
+                <span class="profile-info-label">Email</span>
+                <span class="profile-info-value"><%= user.email %></span>
+              </div>
+            </li>
+            <% if (user.phone) { %>
+              <li class="profile-info-item">
+                <span class="profile-info-icon"><i class="fa-solid fa-phone"></i></span>
+                <div>
+                  <span class="profile-info-label">Phone</span>
+                  <span class="profile-info-value"><%= user.phone %></span>
+                </div>
+              </li>
+            <% } %>
+            <li class="profile-info-item">
+              <span class="profile-info-icon"><i class="fa-regular fa-calendar"></i></span>
+              <div>
+                <span class="profile-info-label">Member since</span>
+                <span class="profile-info-value">
+                  <%= new Date(user.createdAt || Date.now()).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) %>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="profile-card profile-stats-card">
+          <h3 class="profile-card-title"><i class="fa-solid fa-chart-simple me-2"></i>Stats</h3>
+          <div class="profile-stats-grid">
+            <div class="profile-stat-block">
+              <span class="profile-stat-number"><%= userListings ? userListings.length : 0 %></span>
+              <span class="profile-stat-label">Listings</span>
+            </div>
+            <div class="profile-stat-block">
+              <span class="profile-stat-number"><%= user.role === 'host' || user.isHost ? '✓' : '—' %></span>
+              <span class="profile-stat-label">Host</span>
+            </div>
+          </div>
+        </div>
+
+        <% if (currUser && currUser.id === user.id) { %>
+          <a href="/profile/edit" class="btn profile-edit-btn-sidebar">
+            <i class="fa-solid fa-user-pen me-2"></i>Edit Profile
+          </a>
+          <a href="/bookings" class="btn profile-bookings-btn-sidebar">
+            <i class="fa-regular fa-calendar-check me-2"></i>My Bookings
+          </a>
+        <% } %>
+      </aside>
+
+      <!-- ── Main Content ── -->
+      <main class="profile-main">
+
+        <!-- Bio Card -->
+        <div class="profile-card profile-bio-card">
+          <div class="profile-card-header">
+            <h3 class="profile-card-title"><i class="fa-solid fa-pen-to-square me-2"></i>About</h3>
+            <% if (currUser && currUser.id === user.id && !user.bio) { %>
+              <a href="/profile/edit" class="profile-card-action">Add bio</a>
+            <% } %>
+          </div>
+          <% if (user.bio) { %>
+            <p class="profile-bio-text"><%= user.bio %></p>
+          <% } else { %>
+            <div class="profile-empty-inline">
+              <i class="fa-regular fa-file-lines"></i>
+              <p>No biography yet.<% if (currUser && currUser.id === user.id) { %> <a href="/profile/edit">Add one →</a><% } %></p>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Listings Card -->
+        <div class="profile-card">
+          <div class="profile-card-header">
+            <h3 class="profile-card-title">
+              <i class="fa-regular fa-building me-2"></i>
+              Listings
+              <% if (userListings && userListings.length > 0) { %>
+                <span class="profile-count-chip"><%= userListings.length %></span>
+              <% } %>
+            </h3>
+            <% if (currUser && currUser.id === user.id) { %>
+              <a href="/listings/new" class="profile-card-action"><i class="fa-solid fa-plus me-1"></i>Add new</a>
+            <% } %>
+          </div>
+
+          <% if (userListings && userListings.length > 0) { %>
+            <div class="profile-listings-grid">
+              <% for (let listing of userListings) { %>
+                <a href="/listings/<%= listing.id %>" class="profile-listing-card">
+                  <div class="profile-listing-img-wrap">
+                    <% if (listing.image && listing.image.length > 0) { %>
+                      <img src="<%= listing.image[0].url %>" alt="<%= listing.title %>" class="profile-listing-img" />
+                    <% } else { %>
+                      <div class="profile-listing-img-placeholder">
+                        <i class="fa-regular fa-image"></i>
+                      </div>
+                    <% } %>
+                    <div class="profile-listing-img-overlay"></div>
+                  </div>
+                  <div class="profile-listing-body">
+                    <p class="profile-listing-title"><%= listing.title %></p>
+                    <p class="profile-listing-price">
+                      <strong>&#8377;<%= listing.price ? listing.price.toLocaleString('en-IN') : '0' %></strong>
+                      <span>/ night</span>
+                    </p>
+                    <% if (listing.location) { %>
+                      <p class="profile-listing-location"><i class="fa-solid fa-location-dot me-1"></i><%= listing.location %></p>
+                    <% } %>
+                  </div>
+                </a>
+              <% } %>
+            </div>
+          <% } else { %>
+            <div class="profile-empty-state">
+              <div class="profile-empty-icon">
+                <i class="fa-regular fa-building"></i>
+              </div>
+              <p class="profile-empty-title">No listings yet</p>
+              <p class="profile-empty-subtitle">
+                <% if (currUser && currUser.id === user.id) { %>
+                  Ready to share your space with the world?
+                <% } else { %>
+                  <%= user.fullName || user.username %> hasn't listed any places yet.
+                <% } %>
+              </p>
+              <% if (currUser && currUser.id === user.id) { %>
+                <a href="/listings/new" class="btn btn-primary btn-sm mt-2">
+                  <i class="fa-solid fa-plus me-2"></i>Create your first listing
+                </a>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>

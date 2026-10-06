@@ -14,6 +14,23 @@
   --color-success: #2F9E66;
   --color-error: #E0483C;
 
+  /* Gradients */
+  --gradient-coral: linear-gradient(135deg, #F0663C, #D6501F);
+  --gradient-pine: linear-gradient(135deg, #1F4B43, #153731);
+  --gradient-coral-gold: linear-gradient(135deg, #F0663C 0%, #E2A33B 100%);
+  --gradient-hero-accent: linear-gradient(90deg, #F0663C 0%, #E2A33B 50%, #F0663C 100%);
+
+  /* Glows */
+  --glow-coral: 0 0 32px rgba(240, 102, 60, 0.35);
+  --glow-gold: 0 0 32px rgba(226, 163, 59, 0.35);
+  --glow-green: 0 0 32px rgba(47, 158, 102, 0.35);
+
+  /* Font families */
+  --font-display: 'Calistoga', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Outfit', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+
   /* Typography scale fluid clamp */
   --fs-h1: clamp(1.75rem, 4vw, 2.75rem);
   --fs-h2: clamp(1.375rem, 2.5vw, 1.875rem);
@@ -36,9 +53,12 @@
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 999px;
 
   --shadow-sm: 0 1px 2px rgba(20, 24, 31, 0.06);
   --shadow-md: 0 4px 16px rgba(20, 24, 31, 0.08);
   --shadow-lg: 0 12px 32px rgba(20, 24, 31, 0.14);
+  --shadow-xl: 0 24px 48px rgba(20, 24, 31, 0.18);
+  --shadow-inner: inset 0 2px 4px rgba(20, 24, 31, 0.06);
 }

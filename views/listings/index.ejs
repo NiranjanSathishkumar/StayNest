@@ -1,138 +1,369 @@
 <% layout("/layouts/boilerplate") %>
 
+<%
+  const commonParts = [];
+  if (searchQuery) commonParts.push('search=' + encodeURIComponent(searchQuery));
+  if (activeCategory && activeCategory !== 'trending') commonParts.push('category=' + activeCategory);
+  if (minPrice) commonParts.push('minPrice=' + minPrice);
+  if (maxPrice) commonParts.push('maxPrice=' + maxPrice);
+  const commonQuery = commonParts.join('&');
+  const greatValueOnHref = '/listings?' + (commonQuery ? commonQuery + '&' : '') + 'greatValue=true';
+  const greatValueOffHref = '/listings' + (commonQuery ? '?' + commonQuery : '');
+
+  const categoryMeta = {
+    'beach-house': { label: 'Beachfront', icon: 'fa-water' },
+    'villa': { label: 'Villa', icon: 'fa-person-swimming' },
+    'apartment': { label: 'Apartment', icon: 'fa-city' },
+    'house': { label: 'House', icon: 'fa-house' },
+    'cottage': { label: 'Cottage', icon: 'fa-mountain' },
+    'cabin': { label: 'Cabin', icon: 'fa-tree' },
+    'mountain-lodge': { label: 'Mountain Lodge', icon: 'fa-snowflake' },
+    'hotel': { label: 'Hotel & Suite', icon: 'fa-hotel' },
+    'camping': { label: 'Camp & Tent', icon: 'fa-campground' },
+    'farmhouse': { label: 'Farmhouse', icon: 'fa-tractor' },
+    'guest-house': { label: 'Heritage Stay', icon: 'fa-landmark' },
+    'resort': { label: 'Luxury Resort', icon: 'fa-champagne-glasses' },
+    'bungalow': { label: 'Bungalow', icon: 'fa-house-chimney' }
+  };
+
+  const amenityIcons = {
+    'wifi': { label: 'Wifi', icon: 'fa-wifi' },
+    'swimming-pool': { label: 'Pool', icon: 'fa-person-swimming' },
+    'air-conditioning': { label: 'AC', icon: 'fa-snowflake' },
+    'kitchen': { label: 'Kitchen', icon: 'fa-kitchen-set' },
+    'free-parking': { label: 'Parking', icon: 'fa-square-parking' },
+    'pet-friendly': { label: 'Pet Friendly', icon: 'fa-paw' },
+    'hot-water': { label: 'Hot Water', icon: 'fa-bath' },
+    'tv': { label: 'TV', icon: 'fa-tv' },
+    'workspace': { label: 'Workspace', icon: 'fa-laptop' },
+    'washing-machine': { label: 'Washer', icon: 'fa-soap' }
+  };
+%>
+
 <div id="filters-wrapper">
   <button id="scroll-left" class="scroll-btn" aria-label="Scroll left"><i class="fa-solid fa-chevron-left"></i></button>
 
   <div id="filters">
-    <div class="filter active" data-category="trending">
+    <a href="/listings" class="filter <%= activeCategory === 'trending' ? 'active' : '' %>" data-category="trending">
       <i class="fa-solid fa-fire"></i>
       <p>Trending</p>
-    </div>
-    <div class="filter" data-category="room">
+    </a>
+    <a href="/listings?category=room<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'room' ? 'active' : '' %>" data-category="room">
       <i class="fa-solid fa-bed"></i>
       <p>Rooms</p>
-    </div>
-    <div class="filter" data-category="beachfront">
+    </a>
+    <a href="/listings?category=beachfront<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'beachfront' ? 'active' : '' %>" data-category="beachfront">
       <i class="fa-solid fa-water"></i>
       <p>Beachfront</p>
-    </div>
-    <div class="filter" data-category="arctic">
+    </a>
+    <a href="/listings?category=arctic<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'arctic' ? 'active' : '' %>" data-category="arctic">
       <i class="fa-solid fa-snowflake"></i>
       <p>Arctic</p>
-    </div>
-    <div class="filter" data-category="countryside">
+    </a>
+    <a href="/listings?category=countryside<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'countryside' ? 'active' : '' %>" data-category="countryside">
       <i class="fa-solid fa-mountain"></i>
       <p>Countryside</p>
-    </div>
-    <div class="filter" data-category="cabins">
+    </a>
+    <a href="/listings?category=cabins<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'cabins' ? 'active' : '' %>" data-category="cabins">
       <i class="fa-solid fa-tree"></i>
       <p>Cabins</p>
-    </div>
-    <div class="filter" data-category="pools">
+    </a>
+    <a href="/listings?category=pools<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'pools' ? 'active' : '' %>" data-category="pools">
       <i class="fa-solid fa-person-swimming"></i>
       <p>Amazing Pools</p>
-    </div>
-    <div class="filter" data-category="views">
+    </a>
+    <a href="/listings?category=views<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'views' ? 'active' : '' %>" data-category="views">
       <i class="fa-solid fa-city"></i>
       <p>Amazing Views</p>
-    </div>
-    <div class="filter" data-category="camping">
+    </a>
+    <a href="/listings?category=camping<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'camping' ? 'active' : '' %>" data-category="camping">
       <i class="fa-solid fa-campground"></i>
       <p>Camping</p>
-    </div>
-    <div class="filter" data-category="farms">
+    </a>
+    <a href="/listings?category=farms<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'farms' ? 'active' : '' %>" data-category="farms">
       <i class="fa-solid fa-house-chimney"></i>
       <p>Farms</p>
-    </div>
-    <div class="filter" data-category="islands">
+    </a>
+    <a href="/listings?category=islands<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'islands' ? 'active' : '' %>" data-category="islands">
       <i class="fa-solid fa-umbrella-beach"></i>
       <p>Islands</p>
-    </div>
-    <div class="filter" data-category="luxe">
+    </a>
+    <a href="/listings?category=luxe<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'luxe' ? 'active' : '' %>" data-category="luxe">
       <i class="fa-solid fa-champagne-glasses"></i>
       <p>Luxe</p>
-    </div>
-    <div class="filter" data-category="iconic">
+    </a>
+    <a href="/listings?category=iconic<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'iconic' ? 'active' : '' %>" data-category="iconic">
       <i class="fa-solid fa-igloo"></i>
       <p>Iconic Cities</p>
-    </div>
-    <div class="filter" data-category="tiny">
+    </a>
+    <a href="/listings?category=tiny<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'tiny' ? 'active' : '' %>" data-category="tiny">
       <i class="fa-solid fa-caravan"></i>
       <p>Tiny Homes</p>
-    </div>
-    <div class="filter" data-category="towers">
+    </a>
+    <a href="/listings?category=towers<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'towers' ? 'active' : '' %>" data-category="towers">
       <i class="fa-solid fa-tower-observation"></i>
       <p>Towers</p>
-    </div>
-    <div class="filter" data-category="trekking">
+    </a>
+    <a href="/listings?category=trekking<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'trekking' ? 'active' : '' %>" data-category="trekking">
       <i class="fa-solid fa-person-hiking"></i>
       <p>Trekking</p>
-    </div>
-    <div class="filter" data-category="wellness">
+    </a>
+    <a href="/listings?category=wellness<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'wellness' ? 'active' : '' %>" data-category="wellness">
       <i class="fa-solid fa-spa"></i>
       <p>Wellness</p>
-    </div>
-    <div class="filter" data-category="temples">
+    </a>
+    <a href="/listings?category=temples<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'temples' ? 'active' : '' %>" data-category="temples">
       <i class="fa-solid fa-vihara"></i>
       <p>Temples</p>
-    </div>
-    <div class="filter" data-category="farmstay">
+    </a>
+    <a href="/listings?category=farmstay<%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'farmstay' ? 'active' : '' %>" data-category="farmstay">
       <i class="fa-solid fa-tractor"></i>
       <p>Farm Stay</p>
-    </div>
+    </a>
   </div>
 
   <button id="scroll-right" class="scroll-btn" aria-label="Scroll right"><i class="fa-solid fa-chevron-right"></i></button>
 
-  <label class="form-check form-switch tax-switch" id="taxSwitchPill" for="switchCheckDefault">
-    <i class="fa-solid fa-receipt tax-switch-icon"></i>
-    <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-    <span>Show total after taxes</span>
-  </label>
+  <div class="d-flex align-items-center gap-3 flex-shrink-0">
+    <!-- Price Filter Dropdown -->
+    <div class="dropdown" id="priceFilterDropdown">
+      <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-1 px-3 py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 22px; font-size: 0.88rem; font-weight: 500; border-color: var(--color-border); background: var(--color-paper);">
+        <i class="fa-solid fa-sliders me-1"></i> Price
+        <% if (minPrice || maxPrice) { %>
+          <span class="badge bg-danger ms-1 rounded-pill" style="font-size: 0.7rem; padding: 2px 6px;">●</span>
+        <% } %>
+      </button>
+      <div class="dropdown-menu p-3 shadow border-0" style="min-width: 240px; border-radius: 16px;" aria-labelledby="priceFilterDropdown">
+        <form action="/listings" method="GET" id="priceFilterForm">
+          <% if (searchQuery) { %><input type="hidden" name="search" value="<%= searchQuery %>"><% } %>
+          <% if (activeCategory && activeCategory !== 'trending') { %><input type="hidden" name="category" value="<%= activeCategory %>"><% } %>
+          <% if (greatValue) { %><input type="hidden" name="greatValue" value="true"><% } %>
+          <p class="mb-2 fw-semibold" style="font-size: 0.9rem;">Filter by Price (₹ / night)</p>
+          <div class="d-flex gap-2 mb-3">
+            <div class="flex-fill">
+              <label class="form-label" style="font-size: 0.78rem; color: var(--color-ink-soft);">Min</label>
+              <input type="number" name="minPrice" class="form-control form-control-sm" placeholder="₹0" value="<%= minPrice %>" min="0" style="border-radius: 10px;">
+            </div>
+            <div class="flex-fill">
+              <label class="form-label" style="font-size: 0.78rem; color: var(--color-ink-soft);">Max</label>
+              <input type="number" name="maxPrice" class="form-control form-control-sm" placeholder="Any" value="<%= maxPrice %>" min="0" style="border-radius: 10px;">
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-sm btn-primary flex-fill" style="border-radius: 10px;">Apply</button>
+            <a href="/listings<%= searchQuery ? '?search=' + encodeURIComponent(searchQuery) : '' %><%= (activeCategory && activeCategory !== 'trending') ? (searchQuery ? '&' : '?') + 'category=' + activeCategory : '' %>" class="btn btn-sm btn-ghost flex-fill text-center" style="border-radius: 10px;">Clear</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Great Value filter: nested (correlated) subquery -->
+    <a
+      href="<%= greatValue ? greatValueOffHref : greatValueOnHref %>"
+      class="btn btn-sm d-flex align-items-center gap-1 px-3 py-2"
+      style="border-radius: 22px; font-size: 0.88rem; font-weight: 500; text-decoration: none; <%= greatValue ? 'background: var(--color-coral); color: #fff; border: 1px solid var(--color-coral);' : 'background: var(--color-paper); color: inherit; border: 1px solid var(--color-border);' %>"
+      title="Priced below the average for its category"
+    >
+      <i class="fa-solid fa-gem me-1"></i> Great Value
+    </a>
+  </div>
 </div>
 
-<div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3 g-4">
-  <% for(let listing of allListings) { %>
-    <a href="/listings/<%= listing._id %>" class="listing-link col">
-      <div class="listing-card">
-        <div class="card-img-wrapper">
-          <img
-            src="<%= listing.image.url %>"
-            class="card-img-top"
-            alt="<%= listing.title %>"
-            loading="lazy"
-          />
-        </div>
-        <div class="card-body">
-          <p class="listing-title"><%= listing.title %></p>
-          <p class="listing-price">
-            <strong>&#8377;<%= listing.price.toLocaleString("en-IN") %></strong> / night
-            <i class="tax-info">&nbsp;+18% GST</i>
-          </p>
+<!-- Active filters banner -->
+<% if (searchQuery || (activeCategory && activeCategory !== 'trending') || minPrice || maxPrice || greatValue) { %>
+  <div class="d-flex align-items-center gap-2 flex-wrap mt-3 mb-1">
+    <span style="font-size: 0.85rem; color: var(--color-ink-soft);">
+      <strong style="color: var(--color-ink);"><%= allListings.length %></strong>
+      result<%= allListings.length !== 1 ? 's' : '' %>
+    </span>
+    <% if (searchQuery) { %>
+      <span class="filter-active-pill">
+        <i class="fa-solid fa-magnifying-glass"></i>"<%= searchQuery %>"
+        <a href="/listings?<%= activeCategory && activeCategory !== 'trending' ? 'category=' + activeCategory + '&' : '' %><%= minPrice ? 'minPrice=' + minPrice + '&' : '' %><%= maxPrice ? 'maxPrice=' + maxPrice : '' %>" class="text-decoration-none ms-1" style="color: inherit; opacity: 0.6;">&times;</a>
+      </span>
+    <% } %>
+    <% if (activeCategory && activeCategory !== 'trending') { %>
+      <span class="filter-active-pill" style="text-transform: capitalize;">
+        <i class="fa-solid fa-tag"></i><%= activeCategory %>
+        <a href="/listings?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %><%= minPrice ? 'minPrice=' + minPrice + '&' : '' %><%= maxPrice ? 'maxPrice=' + maxPrice : '' %>" class="text-decoration-none ms-1" style="color: inherit; opacity: 0.6;">&times;</a>
+      </span>
+    <% } %>
+    <% if (minPrice || maxPrice) { %>
+      <span class="filter-active-pill">
+        <i class="fa-solid fa-indian-rupee-sign"></i><%= minPrice || '0' %> – <%= maxPrice || '∞' %>
+        <a href="/listings?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %><%= activeCategory && activeCategory !== 'trending' ? 'category=' + activeCategory : '' %>" class="text-decoration-none ms-1" style="color: inherit; opacity: 0.6;">&times;</a>
+      </span>
+    <% } %>
+    <% if (greatValue) { %>
+      <span class="filter-active-pill">
+        <i class="fa-solid fa-gem"></i>Great Value
+        <a href="<%= greatValueOffHref %>" class="text-decoration-none ms-1" style="color: inherit; opacity: 0.6;">&times;</a>
+      </span>
+    <% } %>
+    <a href="/listings" class="ms-auto text-decoration-none" style="font-size: 0.8rem; color: var(--color-muted); font-family: var(--font-label, 'Outfit', sans-serif);">Clear all</a>
+  </div>
+<% } %>
+
+<!-- Results Grid -->
+<% if (allListings.length === 0) { %>
+  <div class="listing-empty-state mt-4">
+    <div class="listing-empty-icon">
+      <i class="fa-solid fa-magnifying-glass" style="color: var(--color-coral);"></i>
+    </div>
+    <h2 class="listing-empty-title">No listings found</h2>
+    <p class="listing-empty-desc">
+      <% if (searchQuery) { %>
+        No results for "<strong><%= searchQuery %></strong>". Try a different search term or explore all our stays.
+      <% } else if (greatValue) { %>
+        No great-value listings match your other filters right now.
+      <% } else if (activeCategory && activeCategory !== 'trending') { %>
+        No listings in the <strong><%= activeCategory %></strong> category yet.
+      <% } else { %>
+        No listings match your current filters.
+      <% } %>
+    </p>
+    <a href="/listings" class="btn btn-primary"><i class="fa-solid fa-compass me-2"></i>Browse all stays</a>
+  </div>
+<% } else { %>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4 mt-2" id="listingsGrid">
+    <% for(let listing of allListings) { 
+         const cat = categoryMeta[listing.category] || { label: listing.category ? listing.category.replace('-', ' ') : 'Stay', icon: 'fa-house' };
+         const images = (listing.image && listing.image.length > 0) ? listing.image : [{ url: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800&auto=format&fit=crop' }];
+         const hasMultipleImages = images.length > 1;
+         const keyAmenities = (listing.amenities || []).slice(0, 2);
+    %>
+      <div class="col">
+        <div class="listing-card" data-listing-id="<%= listing.id %>">
+          <!-- Media Gallery Wrap -->
+          <div class="listing-card-media" data-current-index="0" data-total-images="<%= images.length %>">
+            <a href="/listings/<%= listing.id %>" class="listing-media-link" tabindex="-1" aria-label="View <%= listing.title %>">
+              <div class="listing-gallery-slider">
+                <% images.forEach((img, idx) => { %>
+                  <img
+                    src="<%= img.url %>"
+                    alt="<%= listing.title %> photo <%= idx + 1 %>"
+                    class="listing-card-img <%= idx === 0 ? 'is-active' : '' %>"
+                    loading="lazy"
+                    data-index="<%= idx %>"
+                  />
+                <% }); %>
+              </div>
+            </a>
+
+            <!-- Frosted Top Badges -->
+            <div class="listing-badges-top-left">
+              <% if (listing.averageRating >= 4.8) { %>
+                <span class="listing-badge listing-badge--favorite">
+                  <i class="fa-solid fa-award"></i> Guest Favorite
+                </span>
+              <% } else if (listing.isGreatValue) { %>
+                <span class="listing-badge listing-badge--value">
+                  <i class="fa-solid fa-gem"></i> Great Value
+                </span>
+              <% } else if (listing.category) { %>
+                <span class="listing-badge listing-badge--category">
+                  <i class="fa-solid <%= cat.icon %>"></i> <%= cat.label %>
+                </span>
+              <% } %>
+            </div>
+
+            <!-- Wishlist Heart Button -->
+            <button 
+              type="button" 
+              class="listing-wishlist-btn" 
+              aria-label="Save <%= listing.title %> to wishlist"
+              data-listing-id="<%= listing.id %>"
+              title="Save to wishlist"
+            >
+              <i class="fa-regular fa-heart icon-unliked"></i>
+              <i class="fa-solid fa-heart icon-liked"></i>
+            </button>
+
+            <!-- Multi-Image Carousel Controls -->
+            <% if (hasMultipleImages) { %>
+              <button type="button" class="listing-carousel-btn prev" aria-label="Previous image" tabindex="-1">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button type="button" class="listing-carousel-btn next" aria-label="Next image" tabindex="-1">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+
+              <!-- Carousel Pagination Dots -->
+              <div class="listing-carousel-dots" aria-hidden="true">
+                <% images.forEach((_, dotIdx) => { %>
+                  <span class="listing-dot <%= dotIdx === 0 ? 'is-active' : '' %>" data-dot-index="<%= dotIdx %>"></span>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Card Body Content -->
+          <a href="/listings/<%= listing.id %>" class="listing-card-body-link">
+            <div class="listing-card-body">
+              <!-- Location & Rating Row -->
+              <div class="listing-card-meta">
+                <div class="listing-card-location" title="<%= listing.location %><%= listing.country ? ', ' + listing.country : '' %>">
+                  <i class="fa-solid fa-location-dot"></i>
+                  <span class="text-truncate"><%= listing.location %><%= listing.country ? ', ' + listing.country : '' %></span>
+                </div>
+                
+                <div class="listing-card-rating">
+                  <% if (listing.averageRating > 0) { %>
+                    <i class="fa-solid fa-star text-gold"></i>
+                    <span class="rating-num"><%= listing.averageRating.toFixed(1) %></span>
+                  <% } else { %>
+                    <span class="rating-new"><i class="fa-regular fa-star"></i> New</span>
+                  <% } %>
+                </div>
+              </div>
+
+              <!-- Title Row (2-line clamp) -->
+              <h3 class="listing-card-title" title="<%= listing.title %>">
+                <%= listing.title %>
+              </h3>
+
+              <!-- Amenity / Highlight Tags Row -->
+              <div class="listing-amenity-tags">
+                <% if (keyAmenities.length > 0) { %>
+                  <% keyAmenities.forEach(amenityKey => { 
+                       const aMeta = amenityIcons[amenityKey] || { label: amenityKey.replace('-', ' '), icon: 'fa-circle-check' };
+                  %>
+                    <span class="amenity-tag">
+                      <i class="fa-solid <%= aMeta.icon %>"></i> <%= aMeta.label %>
+                    </span>
+                  <% }); %>
+                <% } else if (listing.category) { %>
+                  <span class="amenity-tag">
+                    <i class="fa-solid <%= cat.icon %>"></i> <%= cat.label %>
+                  </span>
+                <% } %>
+                <span class="amenity-tag amenity-tag--instant" title="Instant Booking">
+                  <i class="fa-solid fa-bolt"></i> Instant
+                </span>
+              </div>
+
+              <!-- Price & CTA Footer Row -->
+              <div class="listing-card-footer">
+                <div class="listing-card-price-wrap">
+                  <span class="listing-card-price">&#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : '0' %></span>
+                  <span class="listing-card-period">/ night</span>
+                </div>
+                <div class="listing-card-cta">
+                  <span>Explore</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
-    </a>
-  <% } %>
-</div>
+    <% } %>
+  </div>
+<% } %>
 
 <script>
-  // Tax switch — toggle GST info & pill active state
-  const taxSwitch = document.getElementById("switchCheckDefault");
-  const taxPill   = document.getElementById("taxSwitchPill");
-  taxSwitch.addEventListener("change", () => {
-    const taxInfoEls = document.getElementsByClassName("tax-info");
-    const active = taxSwitch.checked;
-    for (const el of taxInfoEls) {
-      el.style.display = active ? "inline" : "none";
-    }
-    taxPill.classList.toggle("is-active", active);
-  });
-
-  // Filter tabs — highlight active
-  document.querySelectorAll(".filter").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".filter").forEach(f => f.classList.remove("active"));
-      btn.classList.add("active");
-    });
+  // Prevent price filter dropdown from closing when interacting inside
+  document.querySelector('#priceFilterDropdown .dropdown-menu')?.addEventListener('click', e => {
+    e.stopPropagation();
   });
 </script>

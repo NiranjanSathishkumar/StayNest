@@ -1,9 +1,12 @@
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+<nav class="navbar navbar-expand-md sticky-top" id="main-navbar">
   <div class="container-fluid content-container">
-    <a class="navbar-brand" href="/listings">
+    <!-- Brand -->
+    <a class="navbar-brand" href="/">
       <i class="fa-regular fa-compass"></i>
-      <span>WanderLust</span>
+      <span>StayNest</span>
     </a>
+
+    <!-- Mobile toggler -->
     <button
       class="navbar-toggler"
       type="button"
@@ -15,35 +18,67 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Left Nav Links -->
       <div class="navbar-nav me-auto">
         <a class="nav-link" href="/listings">Explore</a>
       </div>
 
-      <div class="navbar-nav mx-auto">
-        <form class="nav-search-form" role="search">
-          <input class="nav-search-input" type="search" placeholder="Search Destination" aria-label="Search"/>
+      <!-- Center Search -->
+      <div class="navbar-nav mx-auto nav-search-wrapper">
+        <form class="nav-search-form" role="search" action="/listings" method="GET">
+          <i class="fa-solid fa-magnifying-glass nav-search-icon-left"></i>
+          <input
+            class="nav-search-input"
+            type="search"
+            name="search"
+            placeholder="Search destinations…"
+            aria-label="Search"
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+          />
           <button class="btn-search" type="submit" aria-label="Submit search">
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-arrow-right"></i>
           </button>
         </form>
       </div>
 
-      <div class="navbar-nav ms-auto gap-2 align-items-md-center">
-        <a class="nav-link" href="/listings/new">WanderLust Your Place</a>
+      <!-- Right Actions -->
+      <div class="navbar-nav ms-auto gap-1 align-items-md-center">
+        <a class="nav-link nav-host-link" href="/listings/new">
+          <i class="fa-solid fa-house-chimney me-1"></i>
+          Host your space
+        </a>
+
+        <div class="nav-divider"></div>
+
         <% if(!currUser) { %>
-          <a class="nav-link" href="/signup">Sign up</a>
-          <a class="nav-link" href="/login">Log in</a>
+          <a class="nav-link nav-auth-link" href="/signup">Sign up</a>
+          <a class="nav-link btn-nav-login" href="/login">Log in</a>
         <% } else { %>
           <div class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link nav-user-btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <span class="user-avatar">
-                <%= currUser.username.charAt(0).toUpperCase() %>
+                <% if (currUser.profileImageUrl) { %>
+                  <img src="<%= currUser.profileImageUrl %>" alt="avatar" />
+                <% } else { %>
+                  <%= (currUser.fullName || currUser.username).charAt(0).toUpperCase() %>
+                <% } %>
               </span>
-              <span><%= currUser.username %></span>
+              <span class="user-name-label"><%= currUser.fullName || currUser.username %></span>
+              <i class="fa-solid fa-chevron-down nav-chevron"></i>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-md">
-              <li><a class="dropdown-item py-2" href="/logout">Log out</a></li>
+            <ul class="dropdown-menu dropdown-menu-end nav-dropdown-menu">
+              <li class="dropdown-user-info">
+                <span class="dropdown-user-name"><%= currUser.fullName || currUser.username %></span>
+                <% if (currUser.email) { %><span class="dropdown-user-email"><%= currUser.email %></span><% } %>
+              </li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li><a class="dropdown-item" href="/profile"><i class="fa-regular fa-user me-2"></i>My Profile</a></li>
+              <li><a class="dropdown-item" href="/bookings"><i class="fa-regular fa-calendar-check me-2"></i>My Bookings</a></li>
+              <li><a class="dropdown-item" href="/listings/new"><i class="fa-regular fa-plus-square me-2"></i>List a Property</a></li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li><a class="dropdown-item dropdown-item-danger" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Log out</a></li>
             </ul>
           </div>
         <% } %>

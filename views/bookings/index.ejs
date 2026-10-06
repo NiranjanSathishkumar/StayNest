@@ -1,0 +1,36 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<div class="container mt-4" style="max-width: 800px;">
+  <h1 class="form-page-title mb-4">
+    <i class="fa-solid fa-receipt me-2" style="color: var(--color-coral);"></i>
+    My Bookings
+  </h1>
+
+  <% if (bookings.length === 0) { %>
+    <div class="text-center py-5 text-muted">
+      <i class="fa-regular fa-folder-open display-6 mb-2 d-block"></i>
+      No bookings yet.
+    </div>
+  <% } else { %>
+    <div class="d-flex flex-column gap-3">
+      <% for (let booking of bookings) { %>
+        <a href="/bookings/<%= booking.id %>" class="card shadow-sm border p-3 text-decoration-none text-dark" style="border-radius: 14px;">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h2 class="h6 fw-bold mb-1"><%= booking.listing.title %></h2>
+              <p class="text-muted mb-0" style="font-size: 0.82rem;">
+                <%= booking.checkIn.toISOString().slice(0, 10) %> &rarr; <%= booking.checkOut.toISOString().slice(0, 10) %>
+              </p>
+            </div>
+            <div class="text-end">
+              <div class="fw-semibold mb-1">&#8377;<%= booking.amount.toLocaleString("en-IN") %></div>
+              <span class="badge <%= booking.status === 'confirmed' ? 'bg-success' : 'bg-danger' %>">
+                <%= booking.status %>
+              </span>
+            </div>
+          </div>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>

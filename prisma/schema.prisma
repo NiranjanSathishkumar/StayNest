@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  user
+  host
+  admin
+}
+
+model User {
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  username             String   @unique
+  password             String
+  fullName             String?
+  profileImageFilename String?  @default("defaultavatar")
+  profileImageUrl      String?
+  phone                String?
+  bio                  String?
+  isHost               Boolean  @default(false)
+  role                 Role     @default(user)
+
+  listings             Listing[]
+  reviews              Review[]
+  bookings             Booking[]
+}
+
+model Listing {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  price       Float?
+  location    String?
+  country     String?
+  category    String?
+  amenities   String[] @default([])
+  // Maintained by a DB trigger on Review inserts/updates/deletes (see migration
+  // add_db_concepts_demo) rather than computed in the app — a cached aggregate
+  // kept in sync at the database layer.
+  averageRating Float  @default(0)
+
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+
+  images      ListingImage[]
+  reviews     Review[]
+  bookings    Booking[]
+}
+
+model ListingImage {
+  id       String @id @default(uuid())
+  filename String @default("listingimage")
+  url      String @default("https://images.unsplash.com/photo-1625505826533-5c80aca7d157?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  comment   String?
+  rating    Int?
+  createdAt DateTime @default(now())
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  images    ReviewImage[]
+}
+
+model ReviewImage {
+  id       String  @id @default(uuid())
+  filename String  @default("reviewImage")
+  url      String?
+
+  reviewId String
+  review   Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  failed
+}
+
+enum PaymentStatus {
+  success
+  failed
+}
+
+// Booking + Payment are deliberately separate tables (rather than status columns
+// on one row) to demonstrate a foreign key relationship and an atomic transaction
+// across two tables: both rows are written together or neither is.
+model Booking {
+  id        String        @id @default(uuid())
+  amount    Float
+  checkIn   DateTime      @db.Date
+  checkOut  DateTime      @db.Date
+  status    BookingStatus @default(pending)
+  createdAt DateTime      @default(now())
+
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  guestId   String
+  guest     User    @relation(fields: [guestId], references: [id])
+
+  payment   Payment?
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  amount    Float
+  status    PaymentStatus
+  createdAt DateTime      @default(now())
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}

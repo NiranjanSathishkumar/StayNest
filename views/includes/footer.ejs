@@ -1,14 +1,99 @@
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-square-facebook"></i>
+<footer class="site-footer">
+  <div class="content-container">
+    <div class="footer-top">
+      <!-- Brand & Mission Column -->
+      <div class="footer-brand-section">
+        <a class="footer-brand" href="/">
+          <i class="fa-regular fa-compass"></i>
+          <span>StayNest</span>
+        </a>
+        <p class="footer-tagline">
+          Handcrafted escapes, verified local hosts, and seamless vacation rentals. Discover unique stays with instant transactional guarantees and zero hidden fees.
+        </p>
+        <div class="footer-social-links">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram">
             <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="X Twitter">
+            <i class="fa-brands fa-x-twitter"></i>
+          </a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="YouTube">
             <i class="fa-brands fa-youtube"></i>
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
         </div>
-        <div class="f-info-brand">&copy; WanderLust Private Limited</div>
-        <div class="f-info-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
+      </div>
+
+      <!-- Links Grid -->
+      <div class="footer-links-grid">
+        <!-- Col 1: Explore -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Explore Stays</h4>
+          <ul class="footer-list">
+            <li><a href="/listings">All Listings</a></li>
+            <li><a href="/listings?category=beachfront">Beachfront Villas</a></li>
+            <li><a href="/listings?category=cabins">Handcrafted Cabins</a></li>
+            <li><a href="/listings?category=pools">Private Pool Stays</a></li>
+            <li><a href="/listings?category=arctic">Mountain Lodges</a></li>
+            <li><a href="/listings?greatValue=true"><i class="fa-solid fa-gem text-coral me-1"></i>Great Value Deals</a></li>
+          </ul>
         </div>
+
+        <!-- Col 2: Hosting -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Hosting</h4>
+          <ul class="footer-list">
+            <li><a href="/listings/new">StayNest Your Place</a></li>
+            <li><a href="/listings/new">Host Protection &amp; Safety</a></li>
+            <li><a href="/profile">Host Dashboard</a></li>
+            <li><a href="/signup">Join Host Community</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Support & Legal -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Support &amp; Trust</h4>
+          <ul class="footer-list">
+            <li><a href="/#faq">Help &amp; FAQ</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/#why-staynest">Safety &amp; Verification</a></li>
+            <li><a href="/bookings">My Bookings</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
+
+    <!-- Divider Line -->
+    <div class="footer-divider"></div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <span class="copyright">&copy; <%= new Date().getFullYear() %> StayNest Private Limited. All rights reserved.</span>
+        <span class="footer-sep">&bull;</span>
+        <a href="/privacy" class="footer-legal-link">Privacy</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="/terms" class="footer-legal-link">Terms</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="/#destinations" class="footer-legal-link">Destinations</a>
+      </div>
+
+      <div class="footer-bottom-right">
+        <div class="footer-badges">
+          <span class="footer-badge-pill"><i class="fa-solid fa-shield-halved text-success me-1"></i> Verified Stays</span>
+          <span class="footer-badge-pill"><i class="fa-solid fa-bolt text-warning me-1"></i> ACID Safe</span>
+        </div>
+        <div class="footer-locales">
+          <span class="locale-pill"><i class="fa-solid fa-globe me-1"></i> English (IN)</span>
+          <span class="locale-pill">&#8377; INR</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>

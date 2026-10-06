@@ -1,92 +1,498 @@
 <% layout("/layouts/boilerplate.ejs") -%>
 
-<div class="form-page-wrapper">
-  <h1 class="form-page-title">
-    <i class="fa-solid fa-compass me-2" style="color: var(--color-coral);"></i>
-    List Your Place
-  </h1>
+<div class="lp-page">
 
-  <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
-
-    <div class="form-group">
-      <label for="title" class="form-label">Title</label>
-      <input
-        type="text"
-        required
-        name="listing[title]"
-        id="title"
-        class="form-control"
-        placeholder="e.g. Cozy beachside cottage in Goa"
-      />
-      <div class="invalid-feedback">Please provide a title for your listing.</div>
-    </div>
-
-    <div class="form-group">
-      <label for="description" class="form-label">Description</label>
-      <textarea
-        required
-        name="listing[description]"
-        id="description"
-        class="form-control"
-        rows="5"
-        placeholder="Describe your space — what makes it special?"
-      ></textarea>
-      <div class="invalid-feedback">Please add a description.</div>
-    </div>
-
-    <div class="form-group">
-      <label for="image" class="form-label">Upload Image</label>
-      <input type="file" name="listing[image]" id="image" class="form-control" />
-    </div>
-
-    <div class="form-group">
-      <label for="price" class="form-label">Price per Night (&#8377;)</label>
-      <input
-        required
-        type="number"
-        name="listing[price]"
-        id="price"
-        class="form-control"
-        placeholder="e.g. 2500"
-        min="0"
-      />
-      <div class="invalid-feedback">Please enter a valid price.</div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-5 form-group">
-        <label for="location" class="form-label">City / Area</label>
-        <input
-          required
-          type="text"
-          name="listing[location]"
-          id="location"
-          class="form-control"
-          placeholder="e.g. Udaipur"
-        />
-        <div class="invalid-feedback">Please enter a location.</div>
-      </div>
-
-      <div class="col-md-7 form-group">
-        <label for="country" class="form-label">Country</label>
-        <input
-          required
-          type="text"
-          name="listing[country]"
-          id="country"
-          class="form-control"
-          placeholder="e.g. India"
-        />
-        <div class="invalid-feedback">Please enter a country.</div>
+  <!-- ── Page Header ── -->
+  <div class="lp-header">
+    <div class="content-container lp-header-inner">
+      <a href="/listings" class="lp-back-btn" aria-label="Back to listings">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="lp-page-title">List Your Place</h1>
+        <p class="lp-page-subtitle">Share your space with travellers around the world</p>
       </div>
     </div>
+  </div>
 
-    <div class="d-flex gap-3 mt-4">
-      <button class="btn btn-primary" type="submit">
-        <i class="fa-solid fa-plus me-2"></i>Create Listing
-      </button>
-      <a href="/listings" class="btn btn-ghost">Cancel</a>
+  <!-- ── Progress Steps ── -->
+  <div class="lp-progress-bar">
+    <div class="content-container">
+      <div class="lp-steps">
+        <div class="lp-step lp-step--active" data-step="1">
+          <div class="lp-step-dot"><i class="fa-solid fa-house-chimney"></i></div>
+          <span>Basics</span>
+        </div>
+        <div class="lp-step-line"></div>
+        <div class="lp-step" data-step="2">
+          <div class="lp-step-dot"><i class="fa-regular fa-image"></i></div>
+          <span>Photos</span>
+        </div>
+        <div class="lp-step-line"></div>
+        <div class="lp-step" data-step="3">
+          <div class="lp-step-dot"><i class="fa-solid fa-list-check"></i></div>
+          <span>Details</span>
+        </div>
+        <div class="lp-step-line"></div>
+        <div class="lp-step" data-step="4">
+          <div class="lp-step-dot"><i class="fa-solid fa-location-dot"></i></div>
+          <span>Location</span>
+        </div>
+      </div>
     </div>
+  </div>
 
-  </form>
+  <!-- ── Form Body ── -->
+  <div class="content-container lp-body">
+    <form method="POST" action="/listings" novalidate class="needs-validation lp-form" enctype="multipart/form-data" id="listingForm">
+
+      <div class="lp-layout">
+
+        <!-- ══ MAIN FORM ══ -->
+        <main class="lp-main">
+
+          <!-- ── Section 1: Basics ── -->
+          <div class="lp-section" id="lp-section-1">
+            <div class="lp-section-header">
+              <div class="lp-section-num">1</div>
+              <div>
+                <h2 class="lp-section-title">Tell us about your place</h2>
+                <p class="lp-section-desc">Give your listing a catchy title and a vivid description</p>
+              </div>
+            </div>
+
+            <div class="lp-fields">
+              <!-- Title -->
+              <div class="lp-field-group">
+                <label for="title" class="lp-label">
+                  Listing Title <span class="lp-required">*</span>
+                </label>
+                <div class="lp-input-wrap">
+                  <i class="fa-solid fa-pen lp-input-icon"></i>
+                  <input
+                    type="text"
+                    required
+                    name="listing[title]"
+                    id="title"
+                    class="lp-input"
+                    placeholder="e.g. Cozy beachside cottage in Goa"
+                    maxlength="120"
+                  />
+                </div>
+                <div class="invalid-feedback">Please provide a title for your listing.</div>
+              </div>
+
+              <!-- Description -->
+              <div class="lp-field-group">
+                <label for="description" class="lp-label">
+                  Description <span class="lp-required">*</span>
+                </label>
+                <div class="lp-textarea-wrap">
+                  <textarea
+                    required
+                    name="listing[description]"
+                    id="description"
+                    class="lp-textarea"
+                    rows="5"
+                    placeholder="Describe your space — what makes it special? Mention unique features, nearby attractions, and house rules…"
+                    maxlength="2000"
+                    oninput="updateDescCount()"
+                  ></textarea>
+                </div>
+                <div class="lp-field-meta">
+                  <div class="invalid-feedback" style="position:static;">Please add a description.</div>
+                  <span class="lp-char-count"><span id="desc-count">0</span>/2000</span>
+                </div>
+              </div>
+
+              <!-- Category -->
+              <div class="lp-field-group">
+                <label class="lp-label">Category <span class="lp-required">*</span></label>
+                <input type="hidden" name="listing[category]" id="category-hidden" required />
+                <div class="lp-category-grid" id="lp-category-grid">
+                  <button type="button" class="lp-cat-btn" data-value="apartment">
+                    <i class="fa-solid fa-building"></i><span>Apartment</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="house">
+                    <i class="fa-solid fa-house"></i><span>House</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="villa">
+                    <i class="fa-solid fa-umbrella-beach"></i><span>Villa</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="cabin">
+                    <i class="fa-solid fa-tree"></i><span>Cabin</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="cottage">
+                    <i class="fa-solid fa-house-chimney"></i><span>Cottage</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="farmhouse">
+                    <i class="fa-solid fa-tractor"></i><span>Farmhouse</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="beach-house">
+                    <i class="fa-solid fa-water"></i><span>Beach House</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="mountain-lodge">
+                    <i class="fa-solid fa-mountain"></i><span>Mountain Lodge</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="treehouse">
+                    <i class="fa-solid fa-leaf"></i><span>Treehouse</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="bungalow">
+                    <i class="fa-solid fa-igloo"></i><span>Bungalow</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="hostel">
+                    <i class="fa-solid fa-bed"></i><span>Hostel</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="resort">
+                    <i class="fa-solid fa-hot-tub-person"></i><span>Resort</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="camping">
+                    <i class="fa-solid fa-campground"></i><span>Camping</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="hotel">
+                    <i class="fa-solid fa-hotel"></i><span>Hotel</span>
+                  </button>
+                  <button type="button" class="lp-cat-btn" data-value="guest-house">
+                    <i class="fa-solid fa-door-open"></i><span>Guest House</span>
+                  </button>
+                </div>
+                <div class="invalid-feedback" id="category-error" style="display:none;">Please select a category.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Section 2: Photos ── -->
+          <div class="lp-section" id="lp-section-2">
+            <div class="lp-section-header">
+              <div class="lp-section-num">2</div>
+              <div>
+                <h2 class="lp-section-title">Add photos</h2>
+                <p class="lp-section-desc">Great photos are the #1 way to attract guests. Add up to 10.</p>
+              </div>
+            </div>
+
+            <div class="lp-fields">
+              <!-- Drop Zone -->
+              <div class="lp-drop-zone" id="lp-drop-zone">
+                <input
+                  type="file"
+                  name="listing[image]"
+                  id="image"
+                  class="lp-file-input"
+                  multiple
+                  accept="image/png,image/jpg,image/jpeg"
+                  onchange="handleImageFiles(this.files)"
+                />
+                <div class="lp-drop-content" id="lp-drop-content">
+                  <div class="lp-drop-icon">
+                    <i class="fa-regular fa-images"></i>
+                  </div>
+                  <p class="lp-drop-title">Drag photos here or click to upload</p>
+                  <p class="lp-drop-hint">JPG or PNG · Max 10 images · First image is the cover</p>
+                  <button type="button" class="lp-drop-btn" onclick="document.getElementById('image').click()">
+                    <i class="fa-solid fa-arrow-up-from-bracket me-2"></i>Browse files
+                  </button>
+                </div>
+              </div>
+
+              <!-- Image Preview Grid -->
+              <div class="lp-preview-grid" id="lp-preview-grid"></div>
+            </div>
+          </div>
+
+          <!-- ── Section 3: Details ── -->
+          <div class="lp-section" id="lp-section-3">
+            <div class="lp-section-header">
+              <div class="lp-section-num">3</div>
+              <div>
+                <h2 class="lp-section-title">Set your price & amenities</h2>
+                <p class="lp-section-desc">Competitive pricing and clear amenities help guests choose your listing</p>
+              </div>
+            </div>
+
+            <div class="lp-fields">
+              <!-- Price -->
+              <div class="lp-field-group">
+                <label for="price" class="lp-label">Price per Night <span class="lp-required">*</span></label>
+                <div class="lp-price-wrap">
+                  <span class="lp-price-symbol">₹</span>
+                  <input
+                    required
+                    type="number"
+                    name="listing[price]"
+                    id="price"
+                    class="lp-price-input"
+                    placeholder="0"
+                    min="0"
+                  />
+                  <span class="lp-price-suffix">/ night</span>
+                </div>
+                <div class="invalid-feedback">Please enter a valid price.</div>
+              </div>
+
+              <!-- Amenities -->
+              <div class="lp-field-group">
+                <label class="lp-label">Amenities</label>
+                <p class="lp-field-hint">Select all that apply to your space</p>
+                <div class="lp-amenity-grid">
+                  <label class="lp-amenity-card" for="amenity-wifi">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="wifi" id="amenity-wifi" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-wifi"></i>
+                      <span>Wi-Fi</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-ac">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="air-conditioning" id="amenity-ac" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-snowflake"></i>
+                      <span>AC</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-kitchen">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="kitchen" id="amenity-kitchen" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-utensils"></i>
+                      <span>Kitchen</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-parking">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="free-parking" id="amenity-parking" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-square-parking"></i>
+                      <span>Free Parking</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-laundry">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="washing-machine" id="amenity-laundry" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-soap"></i>
+                      <span>Washer</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-pool">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="swimming-pool" id="amenity-pool" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-person-swimming"></i>
+                      <span>Pool</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-pets">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="pet-friendly" id="amenity-pets" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-paw"></i>
+                      <span>Pet Friendly</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-tv">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="tv" id="amenity-tv" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-tv"></i>
+                      <span>TV</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-workspace">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="workspace" id="amenity-workspace" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-briefcase"></i>
+                      <span>Workspace</span>
+                    </div>
+                  </label>
+                  <label class="lp-amenity-card" for="amenity-hotwater">
+                    <input class="lp-amenity-check" type="checkbox" name="listing[amenities][]" value="hot-water" id="amenity-hotwater" />
+                    <div class="lp-amenity-body">
+                      <i class="fa-solid fa-temperature-high"></i>
+                      <span>Hot Water</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Section 4: Location ── -->
+          <div class="lp-section" id="lp-section-4">
+            <div class="lp-section-header">
+              <div class="lp-section-num">4</div>
+              <div>
+                <h2 class="lp-section-title">Where is your place?</h2>
+                <p class="lp-section-desc">Help guests find your listing with an accurate location</p>
+              </div>
+            </div>
+
+            <div class="lp-fields">
+              <div class="lp-location-grid">
+                <div class="lp-field-group">
+                  <label for="location" class="lp-label">City / Area <span class="lp-required">*</span></label>
+                  <div class="lp-input-wrap">
+                    <i class="fa-solid fa-city lp-input-icon"></i>
+                    <input
+                      required
+                      type="text"
+                      name="listing[location]"
+                      id="location"
+                      class="lp-input"
+                      placeholder="e.g. Udaipur, Goa, Manali"
+                    />
+                  </div>
+                  <div class="invalid-feedback">Please enter a location.</div>
+                </div>
+
+                <div class="lp-field-group">
+                  <label for="country" class="lp-label">Country <span class="lp-required">*</span></label>
+                  <div class="lp-input-wrap">
+                    <i class="fa-solid fa-globe lp-input-icon"></i>
+                    <input
+                      required
+                      type="text"
+                      name="listing[country]"
+                      id="country"
+                      class="lp-input"
+                      placeholder="e.g. India"
+                    />
+                  </div>
+                  <div class="invalid-feedback">Please enter a country.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Action Row ── -->
+          <div class="lp-actions">
+            <a href="/listings" class="lp-cancel-btn">
+              <i class="fa-solid fa-xmark me-2"></i>Cancel
+            </a>
+            <button type="submit" class="lp-submit-btn" id="lp-submit-btn">
+              <i class="fa-solid fa-plus me-2"></i>Create Listing
+            </button>
+          </div>
+
+        </main>
+
+        <!-- ══ STICKY SIDEBAR ══ -->
+        <aside class="lp-sidebar">
+          <div class="lp-tips-card">
+            <div class="lp-tips-header">
+              <i class="fa-solid fa-lightbulb"></i>
+              <h3>Tips for a great listing</h3>
+            </div>
+            <ul class="lp-tips-list">
+              <li><i class="fa-solid fa-check"></i> Use a descriptive, specific title</li>
+              <li><i class="fa-solid fa-check"></i> Add 5–10 high-quality photos</li>
+              <li><i class="fa-solid fa-check"></i> Mention all available amenities</li>
+              <li><i class="fa-solid fa-check"></i> Set a competitive nightly price</li>
+              <li><i class="fa-solid fa-check"></i> Double-check your location</li>
+            </ul>
+          </div>
+
+          <div class="lp-trust-card">
+            <i class="fa-solid fa-shield-halved lp-trust-icon"></i>
+            <h4 class="lp-trust-title">StayNest Protection</h4>
+            <p class="lp-trust-body">All listings go through basic verification. Your property and guests are covered by our host guarantee.</p>
+          </div>
+        </aside>
+
+      </div>
+    </form>
+  </div>
 </div>
+
+<script>
+  // Description character count
+  function updateDescCount() {
+    const el = document.getElementById('description');
+    const counter = document.getElementById('desc-count');
+    if (el && counter) counter.textContent = el.value.length;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateDescCount();
+
+    // ── Category selection ──
+    const catBtns = document.querySelectorAll('.lp-cat-btn');
+    const hiddenInput = document.getElementById('category-hidden');
+    catBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catBtns.forEach(b => b.classList.remove('lp-cat-btn--active'));
+        btn.classList.add('lp-cat-btn--active');
+        hiddenInput.value = btn.dataset.value;
+      });
+    });
+
+    // ── Amenity card toggle ──
+    document.querySelectorAll('.lp-amenity-card').forEach(card => {
+      const checkbox = card.querySelector('.lp-amenity-check');
+      checkbox.addEventListener('change', () => {
+        card.classList.toggle('lp-amenity-card--active', checkbox.checked);
+      });
+    });
+
+    // ── Drag & Drop ──
+    const zone = document.getElementById('lp-drop-zone');
+    if (zone) {
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('lp-drop-zone--drag'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('lp-drop-zone--drag'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('lp-drop-zone--drag');
+        handleImageFiles(e.dataTransfer.files);
+      });
+    }
+
+    // ── Active step highlighting on scroll ──
+    const sections = document.querySelectorAll('.lp-section');
+    const steps = document.querySelectorAll('.lp-step');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = Array.from(sections).indexOf(entry.target);
+          steps.forEach((s, i) => {
+            s.classList.toggle('lp-step--active', i === idx);
+            s.classList.toggle('lp-step--done', i < idx);
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => observer.observe(s));
+  });
+
+  // ── Image preview ──
+  function handleImageFiles(files) {
+    const grid = document.getElementById('lp-preview-grid');
+    const fileInput = document.getElementById('image');
+
+    if (files.length > 10) {
+      alert('You can upload a maximum of 10 images.');
+      return;
+    }
+
+    // Transfer files to input if came from drop
+    if (files !== fileInput.files) {
+      const dt = new DataTransfer();
+      Array.from(files).forEach(f => dt.items.add(f));
+      fileInput.files = dt.files;
+    }
+
+    grid.innerHTML = '';
+    Array.from(files).forEach((file, idx) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const div = document.createElement('div');
+        div.className = 'lp-preview-item' + (idx === 0 ? ' lp-preview-cover' : '');
+        div.innerHTML = `
+          <img src="${e.target.result}" alt="Preview ${idx + 1}" />
+          ${idx === 0 ? '<span class="lp-cover-badge">Cover</span>' : ''}
+        `;
+        grid.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Update drop zone UI
+    const content = document.getElementById('lp-drop-content');
+    if (content && files.length > 0) {
+      content.querySelector('.lp-drop-title').textContent = `${files.length} photo${files.length > 1 ? 's' : ''} selected`;
+      content.querySelector('.lp-drop-hint').textContent = 'Click to change selection';
+    }
+  }
+</script>

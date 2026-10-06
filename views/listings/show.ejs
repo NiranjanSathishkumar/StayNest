@@ -15,7 +15,7 @@
   <!-- Title Section -->
   <div class="show-header mb-4">
     <h1 class="show-title"><%= listing.title %></h1>
-    <div class="show-title-meta">
+    <div class="show-title-meta d-flex align-items-center flex-wrap gap-2">
       <span class="meta-item">
         <i class="fa-solid fa-star text-gold"></i>
         <% if (listing.reviews && listing.reviews.length > 0) { %>
@@ -28,17 +28,90 @@
       <span class="meta-item location-link">
         <i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %>
       </span>
+      <% if (listing.category) { %>
+        <span class="meta-separator">·</span>
+        <span class="badge rounded-pill bg-light text-dark border px-3 py-2" style="font-size: 0.8rem; font-weight: 500;">
+          <% if (listing.category === 'apartment') { %>
+            <i class="fa-solid fa-city me-1" style="color: var(--color-coral);"></i> Apartment
+          <% } else if (listing.category === 'house') { %>
+            <i class="fa-solid fa-house me-1" style="color: var(--color-coral);"></i> House
+          <% } else if (listing.category === 'villa') { %>
+            <i class="fa-solid fa-hotel me-1" style="color: var(--color-coral);"></i> Villa
+          <% } else if (listing.category === 'cabin') { %>
+            <i class="fa-solid fa-tree me-1" style="color: var(--color-coral);"></i> Cabin
+          <% } else if (listing.category === 'cottage') { %>
+            <i class="fa-solid fa-house-chimney-window me-1" style="color: var(--color-coral);"></i> Cottage
+          <% } else if (listing.category === 'farmhouse') { %>
+            <i class="fa-solid fa-tractor me-1" style="color: var(--color-coral);"></i> Farmhouse
+          <% } else if (listing.category === 'beach-house') { %>
+            <i class="fa-solid fa-umbrella-beach me-1" style="color: var(--color-coral);"></i> Beach House
+          <% } else if (listing.category === 'mountain-lodge') { %>
+            <i class="fa-solid fa-mountain me-1" style="color: var(--color-coral);"></i> Mountain Lodge
+          <% } else if (listing.category === 'treehouse') { %>
+            <i class="fa-solid fa-leaf me-1" style="color: var(--color-coral);"></i> Treehouse
+          <% } else if (listing.category === 'bungalow') { %>
+            <i class="fa-solid fa-house-user me-1" style="color: var(--color-coral);"></i> Bungalow
+          <% } else if (listing.category === 'guest-house') { %>
+            <i class="fa-solid fa-door-open me-1" style="color: var(--color-coral);"></i> Guest House
+          <% } else if (listing.category === 'hostel') { %>
+            <i class="fa-solid fa-bed me-1" style="color: var(--color-coral);"></i> Hostel
+          <% } else if (listing.category === 'hotel') { %>
+            <i class="fa-solid fa-building me-1" style="color: var(--color-coral);"></i> Hotel
+          <% } else if (listing.category === 'resort') { %>
+            <i class="fa-solid fa-spa me-1" style="color: var(--color-coral);"></i> Resort
+          <% } else if (listing.category === 'camping') { %>
+            <i class="fa-solid fa-campground me-1" style="color: var(--color-coral);"></i> Camping
+          <% } %>
+        </span>
+      <% } %>
     </div>
   </div>
 
-  <!-- Hero Image -->
-  <div class="show-image-wrapper mb-5">
-    <img
-      src="<%= listing.image.url %>"
-      class="show-hero-img"
-      alt="<%= listing.title %>"
-    />
+  <!-- Image Gallery -->
+  <div class="show-image-wrapper mb-3" style="position: relative;">
+    <% if(listing.image && listing.image.length > 0) { %>
+      <!-- Main/cover image -->
+      <img
+        src="<%= listing.image[0].url %>"
+        class="show-hero-img"
+        alt="<%= listing.title %>"
+        id="mainListingImg"
+      />
+      <!-- Chevron buttons for carousel scroll -->
+      <% if(listing.image.length > 1) { %>
+        <button id="prevImgBtn" class="carousel-nav-btn prev-btn" aria-label="Previous image">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button id="nextImgBtn" class="carousel-nav-btn next-btn" aria-label="Next image">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      <% } %>
+    <% } else { %>
+      <img
+        src="https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800&auto=format&fit=crop"
+        class="show-hero-img"
+        alt="<%= listing.title %>"
+        id="mainListingImg"
+      />
+    <% } %>
   </div>
+
+  <!-- Thumbnails (shown only if more than 1 image) -->
+  <% if(listing.image && listing.image.length > 1) { %>
+    <div class="show-thumbnails-container mb-5" style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <% for(let i = 0; i < listing.image.length; i++) { %>
+        <img
+          src="<%= listing.image[i].url %>"
+          alt="<%= listing.title %> image <%= i + 1 %>"
+          class="show-thumbnail-img <%= i === 0 ? 'active' : '' %>"
+          data-index="<%= i %>"
+          style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid <%= i === 0 ? 'var(--color-coral, #e05f3f)' : 'transparent' %>; transition: all 0.2s;"
+        />
+      <% } %>
+    </div>
+  <% } else { %>
+    <div class="mb-5"></div>
+  <% } %>
 
   <!-- Content Split Grid -->
   <div class="row g-md-5 show-layout-grid">
@@ -49,18 +122,77 @@
       <!-- Host header -->
       <div class="show-host-header pb-4 mb-4 border-bottom">
         <div>
-          <h2 class="host-title mb-1">Entire stay hosted by <%= listing.owner.username %></h2>
-          <p class="host-subtitle mb-0">Professional Host · Verified Listing Details</p>
+          <h2 class="host-title mb-1">Entire stay hosted by 
+            <% if (listing.owner) { %>
+              <a href="/profile/<%= listing.owner.id %>" class="text-decoration-none text-dark hover-underline" style="font-weight: 700;"><%= listing.owner.fullName || listing.owner.username %></a>
+            <% } else { %>
+              Unknown Host
+            <% } %>
+          </h2>
+          <p class="host-subtitle mb-0">
+            <% if (listing.owner && (listing.owner.isHost || listing.owner.role === 'host')) { %>
+              Verified Host · 
+            <% } %>
+            Professional Host · Verified Listing Details
+          </p>
         </div>
-        <div class="show-host-avatar">
-          <%= listing.owner.username.charAt(0).toUpperCase() %>
-        </div>
+        <% if (listing.owner) { %>
+          <a href="/profile/<%= listing.owner.id %>" class="text-decoration-none">
+            <div class="show-host-avatar" style="overflow: hidden; padding: 0;">
+              <% if (listing.owner.profileImageUrl) { %>
+                <img src="<%= listing.owner.profileImageUrl %>" alt="Host avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+              <% } else { %>
+                <%= (listing.owner.fullName || listing.owner.username).charAt(0).toUpperCase() %>
+              <% } %>
+            </div>
+          </a>
+        <% } else { %>
+          <div class="show-host-avatar" style="overflow: hidden; padding: 0; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: var(--color-border); font-weight: 600;">
+            U
+          </div>
+        <% } %>
       </div>
 
       <!-- Description Section -->
       <div class="show-description-section pb-4 mb-4 border-bottom">
         <h3 class="show-section-title mb-3">About this space</h3>
         <p class="show-description"><%= listing.description %></p>
+      </div>
+
+      <!-- Amenities Section -->
+      <div class="show-amenities-section pb-4 mb-4 border-bottom">
+        <h3 class="show-section-title mb-3">What this place offers</h3>
+        <div class="row g-3">
+          <% if(listing.amenities && listing.amenities.length > 0) { %>
+            <% for(let amenity of listing.amenities) { %>
+              <div class="col-6 col-md-4 d-flex align-items-center gap-2 amenity-item" style="font-size: 0.95rem; color: var(--color-ink-soft);">
+                <% if(amenity === 'wifi') { %>
+                  <i class="fa-solid fa-wifi" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Wi-Fi</span>
+                <% } else if(amenity === 'air-conditioning') { %>
+                  <i class="fa-solid fa-snowflake" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>AC</span>
+                <% } else if(amenity === 'kitchen') { %>
+                  <i class="fa-solid fa-utensils" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Kitchen</span>
+                <% } else if(amenity === 'free-parking') { %>
+                  <i class="fa-solid fa-square-parking" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Free Parking</span>
+                <% } else if(amenity === 'washing-machine') { %>
+                  <i class="fa-solid fa-soap" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Washer</span>
+                <% } else if(amenity === 'swimming-pool') { %>
+                  <i class="fa-solid fa-person-swimming" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Pool</span>
+                <% } else if(amenity === 'pet-friendly') { %>
+                  <i class="fa-solid fa-paw" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Pet Friendly</span>
+                <% } else if(amenity === 'tv') { %>
+                  <i class="fa-solid fa-tv" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>TV</span>
+                <% } else if(amenity === 'workspace') { %>
+                  <i class="fa-solid fa-briefcase" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Workspace</span>
+                <% } else if(amenity === 'hot-water') { %>
+                  <i class="fa-solid fa-temperature-high" style="font-size: 1.2rem; width: 24px; color: var(--color-coral);"></i> <span>Hot Water</span>
+                <% } %>
+              </div>
+            <% } %>
+          <% } else { %>
+            <div class="col-12 text-muted" style="font-style: italic;">No specific amenities listed for this stay.</div>
+          <% } %>
+        </div>
       </div>
 
       <!-- Reviews Section -->
@@ -77,17 +209,81 @@
           </h3>
         </div>
 
+        <% /* Rating breakdown is computed by a SQL GROUP BY query in the controller (ratingCounts), not counted here. */ %>
+        <% let counts = ratingCounts; %>
+
+        <% if (reviews.length > 0) { %>
+          <!-- Rating Breakdown Progress Card -->
+          <div class="rating-breakdown-card p-4 border rounded-3 mb-4" style="background: var(--color-paper);">
+            <div class="row align-items-center">
+              <div class="col-sm-4 text-center mb-3 mb-sm-0 border-end">
+                <div class="display-3 fw-bold text-dark"><%= avg %></div>
+                <div class="review-stars-large mb-1">
+                  <% for(let j = 1; j <= 5; j++) { %>
+                    <i class="fa-solid fa-star <%= j <= Math.round(avg) ? 'text-gold' : 'text-light-gray' %>" style="font-size:1.1rem;"></i>
+                  <% } %>
+                </div>
+                <div class="text-muted small"><%= reviews.length %> total reviews</div>
+              </div>
+              <div class="col-sm-8 px-sm-4">
+                <% [5, 4, 3, 2, 1].forEach(star => { 
+                    let pct = reviews.length > 0 ? ((counts[star] / reviews.length) * 100).toFixed(0) : 0;
+                %>
+                  <div class="d-flex align-items-center gap-3 mb-2" style="font-size: 0.88rem;">
+                    <span style="width: 48px; text-align: right;" class="fw-semibold"><%= star %> <i class="fa-solid fa-star text-gold ms-0.5" style="font-size: 0.78rem;"></i></span>
+                    <div class="progress flex-grow-1" style="height: 8px; border-radius: 4px; background: #e9ecef;">
+                      <div class="progress-bar" role="progressbar" style="width: <%= pct %>%; background-color: var(--color-coral); border-radius: 4px;" aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span style="width: 32px;" class="text-muted"><%= pct %>%</span>
+                  </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+
+        <% if (reviews.length > 1) { %>
+          <!-- Sorting Controls -->
+          <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <h4 class="h6 mb-0 text-uppercase fw-bold text-muted" style="letter-spacing: 0.5px;">All Reviews</h4>
+            <div class="d-flex align-items-center gap-2">
+              <label for="reviewSortSelect" style="font-size: 0.82rem; color: var(--color-ink-soft); font-weight: 500;">Sort by:</label>
+              <select id="reviewSortSelect" class="form-select form-select-sm" style="width: auto; border-radius: 8px; border-color: var(--color-border); padding: 4px 30px 4px 10px;">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="highest">Highest rating</option>
+                <option value="lowest">Lowest rating</option>
+              </select>
+            </div>
+          </div>
+        <% } %>
+
         <% if(reviews.length > 0) { %>
-          <div class="row g-3 mb-5">
+          <div class="row g-3 mb-5" id="reviewsList">
             <% for(let i = 0; i < reviews.length; i++) { %>
-              <div class="col-md-6">
+              <div class="col-md-6 review-item-card" data-rating="<%= reviews[i].rating %>" data-date="<%= reviews[i].createdAt ? reviews[i].createdAt.getTime() : 0 %>">
                 <div class="card review-card h-100">
                   <div class="card-body">
                     <div class="d-flex align-items-center gap-2 mb-2">
-                      <span class="user-avatar" style="width:28px;height:28px;font-size:0.7rem;">
-                        <%= reviews[i].author.username.charAt(0).toUpperCase() %>
-                      </span>
-                      <h5 class="card-title mb-0"><%= reviews[i].author.username %></h5>
+                      <% if (reviews[i].author) { %>
+                        <a href="/profile/<%= reviews[i].author.id %>" class="text-decoration-none d-flex align-items-center gap-2 text-dark">
+                          <span class="user-avatar" style="width:28px;height:28px;font-size:0.7rem;overflow:hidden;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;">
+                            <% if (reviews[i].author.profileImageUrl) { %>
+                              <img src="<%= reviews[i].author.profileImageUrl %>" alt="avatar" style="width:100%;height:100%;object-fit:cover;" />
+                            <% } else { %>
+                              <%= (reviews[i].author.fullName || reviews[i].author.username).charAt(0).toUpperCase() %>
+                            <% } %>
+                          </span>
+                          <h5 class="card-title mb-0" style="font-size: 0.9rem; font-weight: 600;"><%= reviews[i].author.fullName || reviews[i].author.username %></h5>
+                        </a>
+                      <% } else { %>
+                        <div class="d-flex align-items-center gap-2 text-muted">
+                          <span class="user-avatar" style="width:28px;height:28px;font-size:0.7rem;overflow:hidden;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background-color:var(--color-border);font-weight:600;">
+                            D
+                          </span>
+                          <h5 class="card-title mb-0" style="font-size: 0.9rem; font-weight: 600;">Deleted User</h5>
+                        </div>
+                      <% } %>
                     </div>
                     <div class="review-stars mb-2">
                       <% for(let j = 0; j < reviews[i].rating; j++) { %>
@@ -98,23 +294,43 @@
                       <% } %>
                     </div>
                     <p class="card-text"><%= reviews[i].comment %></p>
+                    <% if (reviews[i].image && reviews[i].image.length > 0) { %>
+                      <div class="review-images-gallery mt-2 mb-3 d-flex flex-wrap gap-1.5">
+                        <% for (let img of reviews[i].image) { %>
+                          <img src="<%= img.url %>" alt="Review image" style="width: 70px; height: 52px; object-fit: cover; border-radius: 6px; border: 1px solid var(--color-border);" />
+                        <% } %>
+                      </div>
+                    <% } %>
 
-                    <% if(currUser && currUser._id.equals(reviews[i].author._id)) { %>
-                      <!-- Review delete trigger -->
-                      <button
-                        class="btn btn-sm btn-ghost wl-delete-review-btn"
-                        type="button"
-                        data-modal="deleteReviewModal"
-                        data-form-id="deleteReviewForm_<%= reviews[i]._id %>"
-                        style="padding:4px 0; font-size: var(--fs-tiny); text-decoration:none; color: var(--color-error) !important; font-weight: 500;"
-                      >
-                        <i class="fa-solid fa-trash me-1"></i>Delete Review
-                      </button>
+                    <% if(currUser && reviews[i].author && currUser.id === reviews[i].author.id) { %>
+                      <!-- Review actions -->
+                      <div class="d-flex align-items-center gap-3 mt-2">
+                        <button
+                          class="btn btn-sm btn-ghost wl-edit-review-btn"
+                          type="button"
+                          data-review-id="<%= reviews[i].id %>"
+                          data-rating="<%= reviews[i].rating %>"
+                          data-comment="<%= reviews[i].comment.replace(/"/g, '&quot;') %>"
+                          data-images='<%- JSON.stringify(reviews[i].image || []) %>'
+                          style="padding:4px 0; font-size: var(--fs-tiny); text-decoration:none; color: var(--color-coral) !important; font-weight: 500;"
+                        >
+                          <i class="fa-solid fa-pen-to-square me-1"></i>Edit
+                        </button>
+                        <button
+                          class="btn btn-sm btn-ghost wl-delete-review-btn"
+                          type="button"
+                          data-modal="deleteReviewModal"
+                          data-form-id="deleteReviewForm_<%= reviews[i].id %>"
+                          style="padding:4px 0; font-size: var(--fs-tiny); text-decoration:none; color: var(--color-error) !important; font-weight: 500;"
+                        >
+                          <i class="fa-solid fa-trash me-1"></i>Delete
+                        </button>
+                      </div>
                       <!-- Hidden review delete form -->
                       <form
-                        id="deleteReviewForm_<%= reviews[i]._id %>"
+                        id="deleteReviewForm_<%= reviews[i].id %>"
                         method="post"
-                        action="/listings/<%= listing._id %>/reviews/<%= reviews[i]._id %>?_method=DELETE"
+                        action="/listings/<%= listing.id %>/reviews/<%= reviews[i].id %>?_method=DELETE"
                         style="display:none;"
                       ></form>
                     <% } %>
@@ -129,11 +345,11 @@
         <% if(currUser) { %>
           <div class="card show-review-form-card p-4 border rounded-3 mb-5">
             <h3 class="show-section-title mb-3" style="font-size: 1.25rem;">Leave a Review</h3>
-            <form method="post" action="/listings/<%= listing._id %>/reviews" novalidate class="needs-validation">
+            <form method="post" action="/listings/<%= listing.id %>/reviews" novalidate class="needs-validation" enctype="multipart/form-data">
 
               <div class="form-group mb-3">
                 <label class="form-label">Rating</label>
-                <!-- Hidden input carries the actual value -->
+                <!-- Hidden input carries the value -->
                 <input type="hidden" name="review[rating]" id="ratingValue" value="3" required />
                 <div class="star-picker" id="starPicker" role="radiogroup" aria-label="Rating">
                   <button type="button" class="star-btn" data-value="1" aria-label="1 star"><i class="fa-solid fa-star"></i></button>
@@ -143,9 +359,10 @@
                   <button type="button" class="star-btn" data-value="5" aria-label="5 stars"><i class="fa-solid fa-star"></i></button>
                 </div>
                 <p class="star-label-text" id="starLabelText">Good</p>
+                <p class="text-muted mb-0" style="font-size: 0.72rem;">1–5 only — enforced both here and by a database CHECK constraint.</p>
               </div>
 
-              <div class="form-group mb-4">
+              <div class="form-group mb-3">
                 <label for="comment" class="form-label">Comment</label>
                 <textarea
                   class="form-control"
@@ -156,6 +373,13 @@
                   required
                 ></textarea>
                 <div class="invalid-feedback">Comment can't be empty</div>
+              </div>
+
+              <div class="form-group mb-4">
+                <label for="review-image" class="form-label">Upload Images</label>
+                <input type="file" name="review[image]" id="review-image" class="form-control" multiple accept="image/png,image/jpg,image/jpeg" />
+                <div id="review-image-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                <div class="form-text" style="color: var(--color-muted, #888); font-size: 0.8rem;">Add up to 5 photos to share your experience.</div>
               </div>
 
               <button class="btn btn-primary px-4 mt-2" type="submit">
@@ -172,7 +396,7 @@
     <div class="col-lg-4 col-md-5 show-sidebar-col mt-4 mt-md-0"><br>
       <div class="show-sticky-card shadow">
         <div class="price-section mb-4">
-          <span class="price-value">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+          <span class="price-value">&#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : '0' %></span>
           <span class="price-label ms-1">/ night</span>
         </div>
 
@@ -189,8 +413,8 @@
 
         <!-- Sticky Card Buttons (Owner Actions or booking context) -->
         <div class="d-grid gap-3">
-          <% if(currUser && currUser._id.equals(listing.owner._id)) { %>
-            <a href="/listings/<%= listing._id %>/edit" class="btn btn-primary py-2.5">
+          <% if(currUser && listing.owner && currUser.id === listing.owner.id) { %>
+            <a href="/listings/<%= listing.id %>/edit" class="btn btn-primary py-2.5">
               <i class="fa-solid fa-pen-to-square me-2"></i>Edit Listing
             </a>
             <button
@@ -201,13 +425,33 @@
             >
               <i class="fa-solid fa-trash me-2"></i>Delete Listing
             </button>
+          <% } else if (currUser) { %>
+            <a href="/listings/<%= listing.id %>/bookings/new" class="btn btn-primary py-2.5">
+              <i class="fa-solid fa-credit-card me-2"></i>Book &amp; Pay
+            </a>
           <% } else { %>
-            <!-- Premium button styling without adding fake functionality -->
-            <button class="btn btn-primary py-2.5" disabled style="opacity: 0.65; cursor: not-allowed;">
-              <i class="fa-solid fa-circle-info me-2"></i>Hosted stays
-            </button>
+            <a href="/login" class="btn btn-primary py-2.5">
+              <i class="fa-solid fa-circle-info me-2"></i>Log in to book
+            </a>
           <% } %>
         </div>
+
+        <!-- Owner-only analytics, sourced from the listing_stats SQL view -->
+        <% if (analytics) { %>
+          <div class="info-card-details border rounded-3 p-3 mt-3">
+            <p class="text-muted mb-2" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-solid fa-chart-simple me-1"></i>Your Listing Analytics
+            </p>
+            <div class="info-card-row border-bottom pb-2 mb-2 d-flex justify-content-between">
+              <span class="info-label text-muted">Confirmed Bookings</span>
+              <span class="info-value text-end fw-semibold"><%= analytics.confirmed_bookings %></span>
+            </div>
+            <div class="info-card-row d-flex justify-content-between">
+              <span class="info-label text-muted">Total Revenue</span>
+              <span class="info-value text-end fw-semibold">&#8377;<%= Number(analytics.total_revenue).toLocaleString("en-IN") %></span>
+            </div>
+          </div>
+        <% } %>
       </div>
     </div>
 
@@ -215,7 +459,7 @@
 </div>
 
 <!-- ═══ Custom Confirm Modal: Delete Listing ═══ -->
-<% if(currUser && listing.owner && currUser._id.equals(listing.owner._id)) { %>
+<% if(currUser && listing.owner && currUser.id === listing.owner.id) { %>
 <div class="wl-modal-backdrop" id="deleteListingModal" role="dialog" aria-modal="true" aria-labelledby="deleteListingModalTitle">
   <div class="wl-modal">
     <div class="wl-modal-icon">
@@ -229,7 +473,7 @@
       <button class="btn btn-ghost wl-modal-cancel" type="button" data-modal="deleteListingModal">
         Cancel
       </button>
-      <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" style="margin:0;">
+      <form method="POST" action="/listings/<%= listing.id %>?_method=DELETE" style="margin:0;">
         <button class="btn-danger-confirm" type="submit">
           <i class="fa-solid fa-trash"></i> Yes, Delete
         </button>
@@ -257,6 +501,55 @@
         <i class="fa-solid fa-trash"></i> Yes, Delete
       </button>
     </div>
+  </div>
+</div>
+
+<!-- ═══ Custom Modal: Edit Review ═══ -->
+<div class="wl-modal-backdrop" id="editReviewModal" role="dialog" aria-modal="true" aria-labelledby="editReviewModalTitle">
+  <div class="wl-modal" style="max-width: 500px; width: 90%;">
+    <p class="wl-modal-title" id="editReviewModalTitle">Edit Review</p>
+    
+    <form id="editReviewForm" method="post" enctype="multipart/form-data" novalidate class="needs-validation">
+      <div class="form-group mb-3 text-start">
+        <label class="form-label text-dark">Rating</label>
+        <input type="hidden" name="review[rating]" id="editRatingValue" value="" required />
+        <div class="star-picker" id="editStarPicker" role="radiogroup" aria-label="Rating">
+          <button type="button" class="star-btn star-btn-edit" data-value="1"><i class="fa-solid fa-star"></i></button>
+          <button type="button" class="star-btn star-btn-edit" data-value="2"><i class="fa-solid fa-star"></i></button>
+          <button type="button" class="star-btn star-btn-edit" data-value="3"><i class="fa-solid fa-star"></i></button>
+          <button type="button" class="star-btn star-btn-edit" data-value="4"><i class="fa-solid fa-star"></i></button>
+          <button type="button" class="star-btn star-btn-edit" data-value="5"><i class="fa-solid fa-star"></i></button>
+        </div>
+        <p class="star-label-text" id="editStarLabelText">Good</p>
+      </div>
+
+      <div class="form-group mb-3 text-start">
+        <label for="editComment" class="form-label text-dark">Comment</label>
+        <textarea class="form-control" rows="4" name="review[comment]" id="editComment" required></textarea>
+        <div class="invalid-feedback">Comment can't be empty</div>
+      </div>
+
+      <!-- Current review images selection for deletion -->
+      <div class="form-group mb-3 text-start" id="editCurrentImagesGroup" style="display: none;">
+        <label class="form-label text-dark">Current Images (Click to delete)</label>
+        <div id="editCurrentImagesContainer" class="d-flex flex-wrap gap-2"></div>
+      </div>
+
+      <div class="form-group mb-3 text-start">
+        <label for="edit-review-image" class="form-label text-dark">Add More Images</label>
+        <input type="file" name="review[image]" id="edit-review-image" class="form-control" multiple accept="image/png,image/jpg,image/jpeg" />
+        <div id="edit-review-image-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+      </div>
+
+      <div class="wl-modal-actions mt-4">
+        <button class="btn btn-ghost wl-modal-cancel" type="button" data-modal="editReviewModal">
+          Cancel
+        </button>
+        <button class="btn btn-primary" type="submit">
+          Save Changes
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -319,9 +612,11 @@
     }
   });
 
-  /* ─── Star Rating Picker ─── */
+  /* ─── Star Rating Picker (create-review form only) ─── */
   const starLabels = ["", "Terrible", "Poor", "Good", "Great", "Amazing!"];
-  const starBtns   = document.querySelectorAll(".star-btn");
+  // Scope to only the create-form star picker — NOT the edit modal's stars
+  const starPicker   = document.getElementById("starPicker");
+  const starBtns     = starPicker ? starPicker.querySelectorAll(".star-btn") : [];
   const ratingHidden = document.getElementById("ratingValue");
   const starLabelText = document.getElementById("starLabelText");
 
@@ -335,29 +630,289 @@
     if (starLabelText) starLabelText.textContent = starLabels[value] || "";
   }
 
-  starBtns.forEach(btn => {
-    // Hover preview
-    btn.addEventListener("mouseenter", () => setStars(parseInt(btn.dataset.value), true));
-    btn.addEventListener("mouseleave", () => setStars(parseInt(ratingHidden.value), false));
+  if (starBtns.length > 0 && ratingHidden) {
+    starBtns.forEach(btn => {
+      // Hover preview
+      btn.addEventListener("mouseenter", () => setStars(parseInt(btn.dataset.value), true));
+      btn.addEventListener("mouseleave", () => setStars(parseInt(ratingHidden.value), false));
 
-    // Click to select
-    btn.addEventListener("click", () => {
-      const val = parseInt(btn.dataset.value);
-      ratingHidden.value = val;
-      setStars(val, false);
-    });
-
-    // Keyboard: Space / Enter also selects
-    btn.addEventListener("keydown", e => {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
+      // Click to select
+      btn.addEventListener("click", () => {
         const val = parseInt(btn.dataset.value);
         ratingHidden.value = val;
         setStars(val, false);
+      });
+
+      // Keyboard: Space / Enter also selects
+      btn.addEventListener("keydown", e => {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          const val = parseInt(btn.dataset.value);
+          ratingHidden.value = val;
+          setStars(val, false);
+        }
+      });
+    });
+
+    // Initialise to default value (3)
+    setStars(parseInt(ratingHidden.value), false);
+  }
+
+  /* ─── Edit Review Modal ─── */
+  const editReviewBtns = document.querySelectorAll(".wl-edit-review-btn");
+  const editReviewForm = document.getElementById("editReviewForm");
+  const editComment = document.getElementById("editComment");
+  const editRatingHidden = document.getElementById("editRatingValue");
+  const editStarBtns = document.querySelectorAll(".star-btn-edit");
+  const editStarLabelText = document.getElementById("editStarLabelText");
+  const editCurrentImagesGroup = document.getElementById("editCurrentImagesGroup");
+  const editCurrentImagesContainer = document.getElementById("editCurrentImagesContainer");
+  const editImgInput = document.getElementById("edit-review-image");
+  const editImgPreview = document.getElementById("edit-review-image-preview");
+
+  function setEditStars(value, isPreview = false) {
+    editStarBtns.forEach(btn => {
+      const v = parseInt(btn.dataset.value);
+      const filled = v <= value;
+      btn.classList.toggle("hovered", isPreview && filled);
+      btn.classList.toggle("active",  !isPreview && filled);
+    });
+    if (editStarLabelText) editStarLabelText.textContent = starLabels[value] || "";
+  }
+
+  if (editStarBtns.length > 0) {
+    editStarBtns.forEach(btn => {
+      btn.addEventListener("mouseenter", () => setEditStars(parseInt(btn.dataset.value), true));
+      btn.addEventListener("mouseleave", () => setEditStars(parseInt(editRatingHidden.value), false));
+      btn.addEventListener("click", () => {
+        const val = parseInt(btn.dataset.value);
+        editRatingHidden.value = val;
+        setEditStars(val, false);
+      });
+    });
+  }
+
+  if (editImgInput && editImgPreview) {
+    editImgInput.addEventListener("change", () => {
+      editImgPreview.innerHTML = "";
+      const files = Array.from(editImgInput.files);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "position-relative";
+          wrapper.style.width = "70px";
+          wrapper.style.height = "52px";
+          wrapper.style.borderRadius = "6px";
+          wrapper.style.overflow = "hidden";
+          wrapper.style.border = "1px solid var(--color-border)";
+          
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.objectFit = "cover";
+          
+          wrapper.appendChild(img);
+          editImgPreview.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  }
+
+  if (editReviewBtns.length > 0) {
+    editReviewBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const reviewId = btn.dataset.reviewId;
+        const rating = parseInt(btn.dataset.rating);
+        const comment = btn.dataset.comment;
+        const images = JSON.parse(btn.dataset.images || "[]");
+
+        // Configure form action
+        if (editReviewForm) {
+          editReviewForm.action = `/listings/<%= listing.id %>/reviews/${reviewId}?_method=PUT`;
+        }
+        if (editComment) editComment.value = comment;
+        if (editRatingHidden) editRatingHidden.value = rating;
+        setEditStars(rating, false);
+
+        // Render current images for potential deletion
+        if (editCurrentImagesContainer) {
+          editCurrentImagesContainer.innerHTML = "";
+          if (images.length > 0) {
+            if (editCurrentImagesGroup) editCurrentImagesGroup.style.display = "block";
+            images.forEach(img => {
+              const wrapper = document.createElement("div");
+              wrapper.className = "position-relative m-1";
+              wrapper.style.width = "70px";
+              wrapper.style.height = "52px";
+              wrapper.style.borderRadius = "6px";
+              wrapper.style.overflow = "hidden";
+              wrapper.style.border = "1px solid var(--color-border)";
+              wrapper.style.cursor = "pointer";
+
+              const image = document.createElement("img");
+              image.src = img.url;
+              image.style.width = "100%";
+              image.style.height = "100%";
+              image.style.objectFit = "cover";
+              image.style.transition = "opacity 0.2s";
+
+              const checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.name = "deleteImages[]";
+              checkbox.value = img.filename;
+              checkbox.style.display = "none";
+
+              const overlay = document.createElement("div");
+              overlay.className = "position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-white";
+              overlay.style.backgroundColor = "rgba(224, 95, 63, 0.8)";
+              overlay.style.opacity = "0";
+              overlay.style.transition = "opacity 0.2s";
+              overlay.innerHTML = '<i class="fa-solid fa-trash"></i>';
+
+              wrapper.appendChild(image);
+              wrapper.appendChild(checkbox);
+              wrapper.appendChild(overlay);
+
+              wrapper.addEventListener("click", () => {
+                checkbox.checked = !checkbox.checked;
+                if (checkbox.checked) {
+                  image.style.opacity = "0.3";
+                  overlay.style.opacity = "1";
+                } else {
+                  image.style.opacity = "1";
+                  overlay.style.opacity = "0";
+                }
+              });
+
+              editCurrentImagesContainer.appendChild(wrapper);
+            });
+          } else {
+            if (editCurrentImagesGroup) editCurrentImagesGroup.style.display = "none";
+          }
+        }
+
+        openModal("editReviewModal");
+      });
+    });
+  }
+
+  /* ─── Leave Review Image Preview ─── */
+  const reviewImgInput = document.getElementById("review-image");
+  const reviewImgPreview = document.getElementById("review-image-preview");
+  if (reviewImgInput && reviewImgPreview) {
+    reviewImgInput.addEventListener("change", () => {
+      reviewImgPreview.innerHTML = "";
+      const files = Array.from(reviewImgInput.files);
+      if (files.length > 5) {
+        alert("You can select up to 5 images only.");
+        reviewImgInput.value = "";
+        return;
+      }
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "position-relative";
+          wrapper.style.width = "70px";
+          wrapper.style.height = "52px";
+          wrapper.style.borderRadius = "6px";
+          wrapper.style.overflow = "hidden";
+          wrapper.style.border = "1px solid var(--color-border)";
+          
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.objectFit = "cover";
+          
+          wrapper.appendChild(img);
+          reviewImgPreview.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  }
+
+  /* ─── Reviews Client-Side Sorting ─── */
+  const sortSelect = document.getElementById("reviewSortSelect");
+  const reviewsList = document.getElementById("reviewsList");
+  if (sortSelect && reviewsList) {
+    sortSelect.addEventListener("change", () => {
+      const items = Array.from(reviewsList.children);
+      const val = sortSelect.value;
+      items.sort((a, b) => {
+        const ratingA = parseInt(a.dataset.rating || "0");
+        const ratingB = parseInt(b.dataset.rating || "0");
+        const dateA   = parseInt(a.dataset.date || "0");
+        const dateB   = parseInt(b.dataset.date || "0");
+        
+        if (val === "newest") return dateB - dateA;
+        if (val === "oldest") return dateA - dateB;
+        if (val === "highest") return ratingB - ratingA || dateB - dateA;
+        if (val === "lowest") return ratingA - ratingB || dateB - dateA;
+        return 0;
+      });
+      reviewsList.innerHTML = "";
+      items.forEach(item => reviewsList.appendChild(item));
+    });
+  }
+
+  /* ─── Image Gallery Carousel ─── */
+  const listingImages = <%- JSON.stringify(listing.image || []) %>;
+  let currentImgIndex = 0;
+
+  const mainListingImg = document.getElementById("mainListingImg");
+  const prevImgBtn = document.getElementById("prevImgBtn");
+  const nextImgBtn = document.getElementById("nextImgBtn");
+  const thumbnailImgs = document.querySelectorAll(".show-thumbnail-img");
+
+  function updateImage(index) {
+    if (listingImages.length === 0) return;
+    
+    // Normalize index (wrap around)
+    if (index < 0) {
+      currentImgIndex = listingImages.length - 1;
+    } else if (index >= listingImages.length) {
+      currentImgIndex = 0;
+    } else {
+      currentImgIndex = index;
+    }
+
+    // Set new image source
+    if (mainListingImg) {
+      mainListingImg.src = listingImages[currentImgIndex].url;
+    }
+
+    // Update thumbnail highlights
+    thumbnailImgs.forEach((thumb, idx) => {
+      if (idx === currentImgIndex) {
+        thumb.style.borderColor = "var(--color-coral, #e05f3f)";
+        thumb.classList.add("active");
+      } else {
+        thumb.style.borderColor = "transparent";
+        thumb.classList.remove("active");
       }
     });
-  });
+  }
 
-  // Initialise to default value (3)
-  setStars(parseInt(ratingHidden.value), false);
+  if (prevImgBtn) {
+    prevImgBtn.addEventListener("click", () => {
+      updateImage(currentImgIndex - 1);
+    });
+  }
+
+  if (nextImgBtn) {
+    nextImgBtn.addEventListener("click", () => {
+      updateImage(currentImgIndex + 1);
+    });
+  }
+
+  thumbnailImgs.forEach((thumb, idx) => {
+    thumb.addEventListener("click", () => {
+      updateImage(idx);
+    });
+  });
 </script>

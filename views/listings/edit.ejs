@@ -6,7 +6,7 @@
     Edit Listing
   </h1>
 
-  <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+  <form method="POST" action="/listings/<%= listing.id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
 
     <div class="form-group">
       <label class="form-label" for="title">Title</label>
@@ -36,17 +36,30 @@
     </div>
 
     <div class="form-group">
-      <label class="form-label">Current Image</label>
-      <img
-        src="<%= listing.image.url %>"
-        alt="Current listing image"
-        class="current-img-preview d-block"
-      />
+      <label class="form-label">Current Images</label>
+      <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 8px;">
+        <% for(let img of (listing.image || [])) { %>
+          <div class="position-relative current-image-card" style="width: 120px; text-align: center;">
+            <img
+              src="<%= img.url %>"
+              alt="Listing image"
+              style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"
+            />
+            <div class="form-check mt-1 d-flex align-items-center justify-content-center gap-1">
+              <input class="form-check-input" type="checkbox" name="deleteImages[]" value="<%= img.filename %>" id="delete-<%= img.id %>" style="cursor: pointer; margin: 0;">
+              <label class="form-check-label text-danger" style="font-size: 0.75rem; font-weight: 600; cursor: pointer;" for="delete-<%= img.id %>">
+                Delete
+              </label>
+            </div>
+          </div>
+        <% } %>
+      </div>
     </div>
 
     <div class="form-group">
-      <label class="form-label" for="image">Replace Image</label>
-      <input class="form-control" type="file" name="listing[image]" id="image" />
+      <label class="form-label" for="image">Add More Images</label>
+      <input class="form-control" type="file" name="listing[image]" id="image" multiple accept="image/png,image/jpg,image/jpeg" />
+      <div class="form-text" style="color: var(--color-muted, #888); font-size: 0.82rem;">New images will be added to the existing ones. Up to 10 total.</div>
     </div>
 
     <div class="form-group">
@@ -62,6 +75,95 @@
         min="0"
       />
       <div class="invalid-feedback">Please enter a valid price.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="category" class="form-label">Category</label>
+      <select name="listing[category]" id="category" class="form-control" required>
+        <option value="" disabled>Select a category</option>
+        <option value="apartment" <%= listing.category === 'apartment' ? 'selected' : '' %>>Apartment</option>
+        <option value="house" <%= listing.category === 'house' ? 'selected' : '' %>>House</option>
+        <option value="villa" <%= listing.category === 'villa' ? 'selected' : '' %>>Villa</option>
+        <option value="cabin" <%= listing.category === 'cabin' ? 'selected' : '' %>>Cabin</option>
+        <option value="cottage" <%= listing.category === 'cottage' ? 'selected' : '' %>>Cottage</option>
+        <option value="farmhouse" <%= listing.category === 'farmhouse' ? 'selected' : '' %>>Farmhouse</option>
+        <option value="beach-house" <%= listing.category === 'beach-house' ? 'selected' : '' %>>Beach House</option>
+        <option value="mountain-lodge" <%= listing.category === 'mountain-lodge' ? 'selected' : '' %>>Mountain Lodge</option>
+        <option value="treehouse" <%= listing.category === 'treehouse' ? 'selected' : '' %>>Treehouse</option>
+        <option value="bungalow" <%= listing.category === 'bungalow' ? 'selected' : '' %>>Bungalow</option>
+        <option value="guest-house" <%= listing.category === 'guest-house' ? 'selected' : '' %>>Guest House</option>
+        <option value="hostel" <%= listing.category === 'hostel' ? 'selected' : '' %>>Hostel</option>
+        <option value="hotel" <%= listing.category === 'hotel' ? 'selected' : '' %>>Hotel</option>
+        <option value="resort" <%= listing.category === 'resort' ? 'selected' : '' %>>Resort</option>
+        <option value="camping" <%= listing.category === 'camping' ? 'selected' : '' %>>Camping</option>
+      </select>
+      <div class="invalid-feedback">Please select a category.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Amenities</label>
+      <div class="row g-3 px-2">
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="wifi" id="amenity-wifi" <%= listing.amenities && listing.amenities.includes('wifi') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-wifi">
+            <i class="fa-solid fa-wifi me-1"></i> Wi-Fi
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="air-conditioning" id="amenity-ac" <%= listing.amenities && listing.amenities.includes('air-conditioning') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-ac">
+            <i class="fa-solid fa-snowflake me-1"></i> AC
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="kitchen" id="amenity-kitchen" <%= listing.amenities && listing.amenities.includes('kitchen') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-kitchen">
+            <i class="fa-solid fa-utensils me-1"></i> Kitchen
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="free-parking" id="amenity-parking" <%= listing.amenities && listing.amenities.includes('free-parking') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-parking">
+            <i class="fa-solid fa-square-parking me-1"></i> Free Parking
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="washing-machine" id="amenity-laundry" <%= listing.amenities && listing.amenities.includes('washing-machine') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-laundry">
+            <i class="fa-solid fa-soap me-1"></i> Washer
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="swimming-pool" id="amenity-pool" <%= listing.amenities && listing.amenities.includes('swimming-pool') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-pool">
+            <i class="fa-solid fa-person-swimming me-1"></i> Pool
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="pet-friendly" id="amenity-pets" <%= listing.amenities && listing.amenities.includes('pet-friendly') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-pets">
+            <i class="fa-solid fa-paw me-1"></i> Pet Friendly
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="tv" id="amenity-tv" <%= listing.amenities && listing.amenities.includes('tv') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-tv">
+            <i class="fa-solid fa-tv me-1"></i> TV
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="workspace" id="amenity-workspace" <%= listing.amenities && listing.amenities.includes('workspace') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-workspace">
+            <i class="fa-solid fa-briefcase me-1"></i> Workspace
+          </label>
+        </div>
+        <div class="col-6 col-md-4 form-check">
+          <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="hot-water" id="amenity-hotwater" <%= listing.amenities && listing.amenities.includes('hot-water') ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-hotwater">
+            <i class="fa-solid fa-temperature-high me-1"></i> Hot Water
+          </label>
+        </div>
+      </div>
     </div>
 
     <div class="row">
@@ -98,7 +200,7 @@
       <button class="btn btn-primary" type="submit">
         <i class="fa-solid fa-floppy-disk me-2"></i>Save Changes
       </button>
-      <a href="/listings/<%= listing._id %>" class="btn btn-ghost">Cancel</a>
+      <a href="/listings/<%= listing.id %>" class="btn btn-ghost">Cancel</a>
     </div>
 
   </form>

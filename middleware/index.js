@@ -1,6 +1,5 @@
-const Listing = require("./models/listing");
-const Review = require("./models/review");
-const ExpressError = require("./utils/ExpressError.js");
+const prisma = require("../prisma/client.js");
+const ExpressError = require("../utils/ExpressError.js");
 const {listingSchema, reviewSchema} = require("./schema.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -15,15 +14,19 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.savedRedirectUrl = (req, res, next) => {
     if(req.session.redirectUrl){
         res.locals.redirectUrl = req.session.redirectUrl;
+        delete req.session.redirectUrl;
     }
     return next();
 }
 
 module.exports.isOwner = async(req, res, next) => {
     let {id} = req.params;
-    let listing = await Listing.findById(id);
+    let listing = await prisma.listing.findUnique({
+        where: { id },
+        select: { ownerId: true }
+    });
             
-    if(!listing.owner.equals(res.locals.currUser._id)){
+    if(!listing || listing.ownerId !== res.locals.currUser.id){
         req.flash("error", "You are not the owner of this listing");
         return res.redirect(`/listings/${id}`);
     }
@@ -32,9 +35,12 @@ module.exports.isOwner = async(req, res, next) => {
 
 module.exports.isReviewAuthor = async(req, res, next) => {
     let {id, reviewId} = req.params;
-    let review = await Review.findById(reviewId);
+    let review = await prisma.review.findUnique({
+        where: { id: reviewId },
+        select: { authorId: true }
+    });
             
-    if(!review.author.equals(res.locals.currUser._id)){
+    if(!review || review.authorId !== res.locals.currUser.id){
         req.flash("error", "You are not the author of this review");
         return res.redirect(`/listings/${id}`);
     }

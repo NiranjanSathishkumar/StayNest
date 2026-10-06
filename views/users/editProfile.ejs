@@ -1,0 +1,278 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<div class="ep-page">
+
+  <!-- ── Page Header ── -->
+  <div class="ep-header">
+    <div class="content-container ep-header-inner">
+      <a href="/profile" class="ep-back-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="ep-page-title">Edit Profile</h1>
+        <p class="ep-page-subtitle">Update your personal information and preferences</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Form ── -->
+  <div class="content-container ep-body">
+    <form method="POST" action="/profile?_method=PUT" novalidate class="needs-validation ep-form" enctype="multipart/form-data" id="editProfileForm">
+
+      <div class="ep-grid">
+
+        <!-- ══ LEFT COLUMN ══ -->
+        <aside class="ep-left">
+
+          <!-- Avatar Upload Card -->
+          <div class="ep-card ep-avatar-card">
+            <h2 class="ep-card-title"><i class="fa-regular fa-image me-2"></i>Profile Photo</h2>
+
+            <!-- Avatar Preview -->
+            <div class="ep-avatar-zone" id="ep-avatar-zone">
+              <div class="ep-avatar-preview" id="ep-avatar-preview">
+                <% if (user.profileImageUrl) { %>
+                  <img src="<%= user.profileImageUrl %>" alt="Avatar" id="profile-preview-img" class="ep-avatar-preview-img" />
+                <% } else { %>
+                  <div class="ep-avatar-letter" id="profile-preview-letter">
+                    <%= (user.fullName || user.username).charAt(0).toUpperCase() %>
+                  </div>
+                <% } %>
+                <div class="ep-avatar-overlay" id="ep-avatar-overlay">
+                  <i class="fa-solid fa-camera"></i>
+                  <span>Change photo</span>
+                </div>
+              </div>
+              <input
+                type="file"
+                name="profileImage"
+                id="profileImage"
+                class="ep-avatar-file-input"
+                accept="image/png,image/jpg,image/jpeg"
+                onchange="previewImage(event)"
+              />
+            </div>
+
+            <p class="ep-avatar-hint">
+              <i class="fa-solid fa-circle-info me-1"></i>
+              JPG or PNG · Max 5 MB
+            </p>
+
+            <% if (user.profileImageUrl) { %>
+              <div class="ep-avatar-current-label">
+                <i class="fa-solid fa-circle-check me-1" style="color: var(--color-success);"></i>
+                Photo uploaded
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Account Mode Card -->
+          <div class="ep-card">
+            <h2 class="ep-card-title"><i class="fa-solid fa-user-tag me-2"></i>Account Mode</h2>
+            <p class="ep-card-desc">Choose how you use StayNest</p>
+
+            <div class="ep-role-options" id="ep-role-options">
+              <label class="ep-role-option" id="role-guest-label">
+                <input type="radio" name="role" value="user" class="ep-role-radio" id="role-guest" <%= (user.role === 'user' || !user.role) ? 'checked' : '' %> />
+                <div class="ep-role-card" id="role-guest-card">
+                  <div class="ep-role-icon ep-role-icon-guest">
+                    <i class="fa-regular fa-user"></i>
+                  </div>
+                  <div class="ep-role-text">
+                    <strong>Guest</strong>
+                    <span>Browse and book stays</span>
+                  </div>
+                  <div class="ep-role-check"><i class="fa-solid fa-circle-check"></i></div>
+                </div>
+              </label>
+
+              <label class="ep-role-option" id="role-host-label">
+                <input type="radio" name="role" value="host" class="ep-role-radio" id="role-host" <%= user.role === 'host' ? 'checked' : '' %> />
+                <div class="ep-role-card" id="role-host-card">
+                  <div class="ep-role-icon ep-role-icon-host">
+                    <i class="fa-solid fa-house-chimney"></i>
+                  </div>
+                  <div class="ep-role-text">
+                    <strong>Host</strong>
+                    <span>List your properties</span>
+                  </div>
+                  <div class="ep-role-check"><i class="fa-solid fa-circle-check"></i></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- ══ RIGHT COLUMN ══ -->
+        <main class="ep-right">
+
+          <!-- Personal Info Card -->
+          <div class="ep-card">
+            <h2 class="ep-card-title"><i class="fa-regular fa-address-card me-2"></i>Personal Information</h2>
+            <p class="ep-card-desc">Your basic profile details</p>
+
+            <div class="ep-fields-grid">
+              <!-- Full Name -->
+              <div class="ep-field-group ep-field-full">
+                <label for="fullName" class="ep-label">
+                  Full Name
+                </label>
+                <div class="ep-input-wrap">
+                  <i class="fa-regular fa-user ep-input-icon"></i>
+                  <input
+                    type="text"
+                    name="fullName"
+                    id="fullName"
+                    class="ep-input"
+                    placeholder="Enter your full name"
+                    value="<%= user.fullName || '' %>"
+                  />
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="ep-field-group ep-field-half">
+                <label for="email" class="ep-label">
+                  Email Address <span class="ep-required">*</span>
+                </label>
+                <div class="ep-input-wrap">
+                  <i class="fa-regular fa-envelope ep-input-icon"></i>
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="ep-input"
+                    placeholder="your@email.com"
+                    value="<%= user.email || '' %>"
+                  />
+                </div>
+                <div class="invalid-feedback">A valid email address is required.</div>
+              </div>
+
+              <!-- Phone -->
+              <div class="ep-field-group ep-field-half">
+                <label for="phone" class="ep-label">Phone Number</label>
+                <div class="ep-input-wrap">
+                  <i class="fa-solid fa-phone ep-input-icon"></i>
+                  <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    class="ep-input"
+                    placeholder="+91 XXXXX XXXXX"
+                    value="<%= user.phone || '' %>"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bio Card -->
+          <div class="ep-card">
+            <h2 class="ep-card-title"><i class="fa-solid fa-pen-to-square me-2"></i>Biography</h2>
+            <p class="ep-card-desc">Tell guests and hosts a little about yourself</p>
+
+            <div class="ep-field-group">
+              <div class="ep-textarea-wrap">
+                <textarea
+                  name="bio"
+                  id="bio"
+                  class="ep-textarea"
+                  rows="5"
+                  placeholder="Write a short bio — where you're from, what you love, what makes you a great guest or host…"
+                  maxlength="500"
+                  oninput="updateBioCount()"
+                ><%= user.bio || '' %></textarea>
+              </div>
+              <div class="ep-bio-meta">
+                <span class="ep-bio-count"><span id="bio-count">0</span>/500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Row -->
+          <div class="ep-actions">
+            <a href="/profile" class="ep-cancel-btn">
+              <i class="fa-solid fa-xmark me-2"></i>Cancel
+            </a>
+            <button type="submit" class="ep-save-btn" id="ep-save-btn">
+              <i class="fa-solid fa-floppy-disk me-2"></i>Save Changes
+            </button>
+          </div>
+
+        </main>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Avatar preview
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      let img = document.getElementById('profile-preview-img');
+      const letterPlaceholder = document.getElementById('profile-preview-letter');
+      if (!img) {
+        img = document.createElement('img');
+        img.id = 'profile-preview-img';
+        img.className = 'ep-avatar-preview-img';
+        if (letterPlaceholder) {
+          letterPlaceholder.parentNode.insertBefore(img, letterPlaceholder);
+          letterPlaceholder.remove();
+        } else {
+          document.getElementById('ep-avatar-preview').insertBefore(img, document.getElementById('ep-avatar-preview').firstChild);
+        }
+      }
+      img.src = reader.result;
+    };
+    if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+  }
+
+  // Bio character count
+  function updateBioCount() {
+    const bio = document.getElementById('bio');
+    const count = document.getElementById('bio-count');
+    if (bio && count) count.textContent = bio.value.length;
+  }
+
+  // Init bio count
+  document.addEventListener('DOMContentLoaded', () => {
+    updateBioCount();
+
+    // Role card highlight
+    const radios = document.querySelectorAll('.ep-role-radio');
+    radios.forEach(r => {
+      r.addEventListener('change', highlightRoleCards);
+    });
+    highlightRoleCards();
+
+    // Drag-and-drop on avatar zone
+    const zone = document.getElementById('ep-avatar-zone');
+    if (zone) {
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('ep-avatar-drag'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('ep-avatar-drag'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('ep-avatar-drag');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          document.getElementById('profileImage').files = dt.files;
+          const evt = new Event('change'); document.getElementById('profileImage').dispatchEvent(evt);
+        }
+      });
+    }
+  });
+
+  function highlightRoleCards() {
+    document.querySelectorAll('.ep-role-radio').forEach(r => {
+      const card = r.nextElementSibling;
+      if (r.checked) card.classList.add('ep-role-card--active');
+      else card.classList.remove('ep-role-card--active');
+    });
+  }
+</script>

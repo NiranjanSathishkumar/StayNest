@@ -1,0 +1,459 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<style>
+  .legal-page {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .legal-hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    margin-bottom: 2.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .legal-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .legal-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 50%;
+  }
+  .legal-hero-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(8px);
+  }
+  .legal-hero h1 {
+    font-size: 2.1rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    font-family: 'Calistoga', serif;
+  }
+  .legal-hero .subtitle {
+    font-size: 0.95rem;
+    opacity: 0.7;
+  }
+  .legal-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 1rem;
+    opacity: 0.85;
+  }
+
+  .legal-toc {
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 80px;
+  }
+  .legal-toc h2 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-soft);
+    margin-bottom: 0.75rem;
+  }
+  .legal-toc ol {
+    padding-left: 1.2rem;
+    margin: 0;
+  }
+  .legal-toc li {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  .legal-toc a {
+    color: var(--color-coral);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.15s;
+  }
+  .legal-toc a:hover { opacity: 0.7; }
+
+  .legal-section {
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    scroll-margin-top: 90px;
+  }
+  .legal-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .legal-section-num {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--color-coral), #ff7f5c);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+  }
+  .legal-section h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: 'Calistoga', serif;
+  }
+  .legal-section p {
+    font-size: 0.94rem;
+    color: var(--color-ink-soft);
+    line-height: 1.75;
+    margin-bottom: 0.85rem;
+  }
+  .legal-section p:last-child { margin-bottom: 0; }
+  .legal-section ul {
+    padding-left: 1.4rem;
+    margin-bottom: 0.85rem;
+  }
+  .legal-section ul li {
+    font-size: 0.94rem;
+    color: var(--color-ink-soft);
+    line-height: 1.7;
+    margin-bottom: 0.35rem;
+  }
+  .legal-section ul li::marker { color: var(--color-coral); }
+  .legal-section strong { color: var(--color-ink); font-weight: 600; }
+
+  .legal-highlight {
+    background: linear-gradient(135deg, #fff5f3, #fff);
+    border-left: 3px solid var(--color-coral);
+    border-radius: 0 12px 12px 0;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-size: 0.91rem;
+    color: var(--color-ink-soft);
+    line-height: 1.65;
+  }
+  .legal-highlight strong { color: var(--color-coral); }
+
+  .legal-contact-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-radius: 20px;
+    padding: 2rem;
+    color: #fff;
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .legal-contact-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-family: 'Calistoga', serif;
+  }
+  .legal-contact-card p {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    margin-bottom: 1.25rem;
+  }
+  .legal-contact-card a {
+    color: #fff;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .legal-contact-card a:hover { background: rgba(255,255,255,0.25); }
+</style>
+
+<div class="legal-page">
+
+  <!-- Hero -->
+  <div class="legal-hero">
+    <div class="legal-hero-icon"><i class="fa-solid fa-file-contract"></i></div>
+    <h1>Terms of Service</h1>
+    <p class="subtitle">Please read these terms carefully before using StayNest. By accessing or using our platform, you agree to be bound by these terms.</p>
+    <div class="legal-updated">
+      <i class="fa-regular fa-calendar"></i> Last updated: July 1, 2025
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Table of Contents -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="legal-toc">
+        <h2>Contents</h2>
+        <ol>
+          <li><a href="#acceptance">Acceptance of Terms</a></li>
+          <li><a href="#eligibility">Eligibility</a></li>
+          <li><a href="#accounts">User Accounts</a></li>
+          <li><a href="#host-rules">Host Responsibilities</a></li>
+          <li><a href="#guest-rules">Guest Responsibilities</a></li>
+          <li><a href="#payments">Payments & Fees</a></li>
+          <li><a href="#cancellations">Cancellations</a></li>
+          <li><a href="#prohibited">Prohibited Conduct</a></li>
+          <li><a href="#content">User Content</a></li>
+          <li><a href="#liability">Limitation of Liability</a></li>
+          <li><a href="#termination">Termination</a></li>
+          <li><a href="#changes">Changes to Terms</a></li>
+          <li><a href="#governing">Governing Law</a></li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Sections -->
+    <div class="col-lg-9">
+
+      <!-- 1 -->
+      <div class="legal-section" id="acceptance">
+        <div class="legal-section-header">
+          <div class="legal-section-num">1</div>
+          <h2>Acceptance of Terms</h2>
+        </div>
+        <p>Welcome to <strong>StayNest</strong>. These Terms of Service ("Terms") govern your access to and use of the StayNest website, mobile applications, and related services (collectively, the "Platform") operated by StayNest Private Limited ("StayNest," "we," "us," or "our").</p>
+        <p>By creating an account, browsing listings, making a booking, or listing a property, you confirm that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. If you do not agree, you must not use the Platform.</p>
+        <div class="legal-highlight">
+          <strong>Important:</strong> These Terms constitute a legally binding agreement between you and StayNest. If you are using the Platform on behalf of a company or organisation, you represent that you have authority to bind that entity to these Terms.
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="legal-section" id="eligibility">
+        <div class="legal-section-header">
+          <div class="legal-section-num">2</div>
+          <h2>Eligibility</h2>
+        </div>
+        <p>To use StayNest, you must meet the following requirements:</p>
+        <ul>
+          <li>You must be at least <strong>18 years of age</strong>.</li>
+          <li>You must have the legal capacity to enter into a binding contract in your jurisdiction.</li>
+          <li>You must not have been previously suspended or removed from the Platform.</li>
+          <li>Your use of the Platform must comply with all applicable local, national, and international laws and regulations.</li>
+        </ul>
+        <p>If you are under 18, you may only use StayNest under the supervision of a parent or legal guardian who agrees to these Terms.</p>
+      </div>
+
+      <!-- 3 -->
+      <div class="legal-section" id="accounts">
+        <div class="legal-section-header">
+          <div class="legal-section-num">3</div>
+          <h2>User Accounts</h2>
+        </div>
+        <p>To access most features of the Platform, you must register for an account. When creating an account, you agree to:</p>
+        <ul>
+          <li>Provide accurate, current, and complete information during registration.</li>
+          <li>Keep your account information updated at all times.</li>
+          <li>Maintain the confidentiality of your password and account credentials.</li>
+          <li>Be responsible for all activity that occurs under your account.</li>
+          <li>Notify StayNest immediately at <strong>support@staynest.in</strong> if you suspect any unauthorised access.</li>
+        </ul>
+        <p>StayNest reserves the right to verify account information and may suspend accounts that provide false or misleading information.</p>
+      </div>
+
+      <!-- 4 -->
+      <div class="legal-section" id="host-rules">
+        <div class="legal-section-header">
+          <div class="legal-section-num">4</div>
+          <h2>Host Responsibilities</h2>
+        </div>
+        <p>By listing a property on StayNest, Hosts agree to the following:</p>
+        <ul>
+          <li><strong>Accuracy:</strong> Listings must accurately describe the property, amenities, location, pricing, and availability.</li>
+          <li><strong>Legal compliance:</strong> Hosts must comply with all local laws, zoning regulations, HOA rules, and any other legal requirements for short-term rentals in their jurisdiction.</li>
+          <li><strong>Taxes:</strong> Hosts are solely responsible for collecting and remitting any applicable taxes (including GST) on their earnings unless StayNest is legally required to collect on their behalf.</li>
+          <li><strong>Safety:</strong> Properties must meet minimum safety standards including functioning smoke detectors, carbon monoxide detectors (where applicable), and clearly marked emergency exits.</li>
+          <li><strong>Cancellations:</strong> Hosts must honour confirmed bookings. Repeated host-initiated cancellations may result in penalties or removal from the Platform.</li>
+          <li><strong>Response rate:</strong> Hosts are expected to maintain a reasonable response rate to guest enquiries within 24 hours.</li>
+        </ul>
+        <p>StayNest reserves the right to remove any listing that violates these guidelines, is inaccurate, or has received sustained negative reviews.</p>
+      </div>
+
+      <!-- 5 -->
+      <div class="legal-section" id="guest-rules">
+        <div class="legal-section-header">
+          <div class="legal-section-num">5</div>
+          <h2>Guest Responsibilities</h2>
+        </div>
+        <p>Guests using StayNest to book stays agree to:</p>
+        <ul>
+          <li>Treat all listed properties with respect and leave them in the condition in which they were found.</li>
+          <li>Adhere to all rules set by the Host, including check-in/check-out times, guest limits, pet policies, and noise restrictions.</li>
+          <li>Not sublease, sublet, or transfer the booking to any third party without written host consent.</li>
+          <li>Report any damage or issues immediately to the Host and to StayNest support.</li>
+          <li>Not exceed the maximum stated guest occupancy of any listing.</li>
+          <li>Pay for any damages caused during the stay that exceed normal wear and tear.</li>
+        </ul>
+        <div class="legal-highlight">
+          <strong>Note:</strong> Guests may be charged an additional security deposit at the time of booking for certain properties. This amount will be refunded within 7 days of check-out, subject to no damage claims.
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="legal-section" id="payments">
+        <div class="legal-section-header">
+          <div class="legal-section-num">6</div>
+          <h2>Payments & Fees</h2>
+        </div>
+        <p>StayNest facilitates payments between Guests and Hosts. By using the Platform's payment services, you agree to:</p>
+        <ul>
+          <li>Pay the total amount displayed at checkout, including nightly rates, service fees, and applicable taxes.</li>
+          <li>Authorise StayNest to charge your selected payment method for the total booking amount.</li>
+          <li>A <strong>service fee</strong> (typically 10–15% of the booking subtotal) is collected by StayNest from Guests to maintain and improve the Platform.</li>
+          <li>A <strong>host service fee</strong> (typically 3%) is deducted from the Host's payout.</li>
+          <li>Host payouts are released within 24 hours after the Guest's check-in, subject to completion of identity verification.</li>
+        </ul>
+        <p>All prices displayed on the Platform are in Indian Rupees (₹) unless otherwise stated. StayNest is not responsible for currency conversion fees charged by your bank.</p>
+      </div>
+
+      <!-- 7 -->
+      <div class="legal-section" id="cancellations">
+        <div class="legal-section-header">
+          <div class="legal-section-num">7</div>
+          <h2>Cancellations & Refunds</h2>
+        </div>
+        <p>Cancellation policies are set by individual Hosts and are displayed on each listing page. StayNest supports three standard cancellation policies:</p>
+        <ul>
+          <li><strong>Flexible:</strong> Full refund up to 24 hours before check-in.</li>
+          <li><strong>Moderate:</strong> Full refund up to 5 days before check-in; 50% refund thereafter.</li>
+          <li><strong>Strict:</strong> 50% refund up to 7 days before check-in; no refund thereafter.</li>
+        </ul>
+        <p>StayNest service fees are non-refundable unless the cancellation is due to a verified extenuating circumstance or a Host-initiated cancellation. In cases of Host cancellation, Guests will receive a full refund including service fees.</p>
+        <div class="legal-highlight">
+          <strong>Extenuating Circumstances:</strong> StayNest may offer exceptions to cancellation policies in cases of natural disasters, serious illness, government travel bans, or other unforeseen events. Documentation may be required.
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="legal-section" id="prohibited">
+        <div class="legal-section-header">
+          <div class="legal-section-num">8</div>
+          <h2>Prohibited Conduct</h2>
+        </div>
+        <p>You agree not to engage in any of the following while using StayNest:</p>
+        <ul>
+          <li>Creating false or misleading listings, reviews, or profiles.</li>
+          <li>Attempting to circumvent the Platform by arranging payments directly to avoid service fees.</li>
+          <li>Harassing, threatening, or discriminating against any user based on race, gender, religion, nationality, sexual orientation, disability, or any other protected characteristic.</li>
+          <li>Using the Platform for any unlawful purpose, including trafficking, money laundering, or fraud.</li>
+          <li>Scraping, crawling, or otherwise extracting data from the Platform without written permission.</li>
+          <li>Interfering with the Platform's security features or attempting to gain unauthorised access to any system.</li>
+          <li>Listing properties that you do not own or are not authorised to rent.</li>
+          <li>Using another user's account without permission.</li>
+        </ul>
+        <p>Violations may result in immediate account suspension, legal action, and/or reporting to appropriate authorities.</p>
+      </div>
+
+      <!-- 9 -->
+      <div class="legal-section" id="content">
+        <div class="legal-section-header">
+          <div class="legal-section-num">9</div>
+          <h2>User Content</h2>
+        </div>
+        <p>When you submit listings, reviews, photos, or other content ("User Content") to the Platform, you grant StayNest a non-exclusive, worldwide, royalty-free, sub-licensable licence to use, reproduce, modify, publish, and display such content in connection with the operation and promotion of the Platform.</p>
+        <p>You represent and warrant that:</p>
+        <ul>
+          <li>You own or have the necessary rights to the content you submit.</li>
+          <li>Your content does not infringe any third-party intellectual property, privacy, or other rights.</li>
+          <li>Your content does not contain misleading, defamatory, or offensive material.</li>
+        </ul>
+        <p>StayNest reserves the right to remove User Content that violates these Terms without notice.</p>
+      </div>
+
+      <!-- 10 -->
+      <div class="legal-section" id="liability">
+        <div class="legal-section-header">
+          <div class="legal-section-num">10</div>
+          <h2>Limitation of Liability</h2>
+        </div>
+        <p>StayNest acts as an intermediary platform connecting Hosts and Guests. To the maximum extent permitted by law:</p>
+        <ul>
+          <li>StayNest is not responsible for the condition, safety, legality, or suitability of any listed property.</li>
+          <li>StayNest does not guarantee the accuracy of listing descriptions, photos, or reviews.</li>
+          <li>StayNest shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Platform.</li>
+          <li>Our total liability to you for any claim shall not exceed the amount you paid to StayNest in the 12 months preceding the claim.</li>
+        </ul>
+        <div class="legal-highlight">
+          <strong>Disclaimer:</strong> The Platform is provided "as is" and "as available" without warranties of any kind, either express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="legal-section" id="termination">
+        <div class="legal-section-header">
+          <div class="legal-section-num">11</div>
+          <h2>Termination</h2>
+        </div>
+        <p>StayNest may suspend or terminate your account and access to the Platform at any time, with or without notice, for any of the following reasons:</p>
+        <ul>
+          <li>Violation of these Terms or our Community Guidelines.</li>
+          <li>Engagement in fraudulent, illegal, or harmful activity.</li>
+          <li>Extended periods of inactivity.</li>
+          <li>Requests by law enforcement or government authorities.</li>
+        </ul>
+        <p>You may delete your account at any time through your account settings. Upon termination, your right to access the Platform immediately ceases. Any outstanding bookings, payments, or disputes will be resolved in accordance with these Terms and applicable law.</p>
+      </div>
+
+      <!-- 12 -->
+      <div class="legal-section" id="changes">
+        <div class="legal-section-header">
+          <div class="legal-section-num">12</div>
+          <h2>Changes to Terms</h2>
+        </div>
+        <p>StayNest reserves the right to modify these Terms at any time. When we make material changes, we will notify you by:</p>
+        <ul>
+          <li>Sending an email to the address associated with your account.</li>
+          <li>Displaying a prominent notice on the Platform.</li>
+          <li>Updating the "Last Updated" date at the top of this page.</li>
+        </ul>
+        <p>Your continued use of the Platform after changes are made constitutes your acceptance of the revised Terms. If you do not agree to the updated Terms, you must stop using the Platform and delete your account.</p>
+      </div>
+
+      <!-- 13 -->
+      <div class="legal-section" id="governing">
+        <div class="legal-section-header">
+          <div class="legal-section-num">13</div>
+          <h2>Governing Law & Dispute Resolution</h2>
+        </div>
+        <p>These Terms are governed by and construed in accordance with the laws of <strong>India</strong>, without regard to its conflict of law provisions.</p>
+        <p>Any disputes arising out of or in connection with these Terms shall first be attempted to be resolved through good-faith negotiation. If unresolved within 30 days, disputes shall be submitted to binding arbitration in accordance with the Arbitration and Conciliation Act, 1996, with the seat of arbitration in <strong>Bengaluru, Karnataka</strong>.</p>
+        <p>Notwithstanding the above, either party may seek injunctive or other equitable relief from courts of competent jurisdiction in Bengaluru, Karnataka to prevent any actual or threatened infringement, misappropriation, or violation of intellectual property rights.</p>
+      </div>
+
+      <!-- Contact Card -->
+      <div class="legal-contact-card">
+        <i class="fa-solid fa-envelope-open-text fa-2x mb-3" style="opacity: 0.8;"></i>
+        <h3>Questions about these Terms?</h3>
+        <p>Our legal team is happy to help clarify any section of these Terms of Service.</p>
+        <a href="mailto:legal@staynest.in"><i class="fa-solid fa-paper-plane me-2"></i>Contact Legal Team</a>
+      </div>
+
+    </div>
+  </div>
+</div>

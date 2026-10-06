@@ -1,0 +1,65 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<div class="form-page-wrapper" style="max-width: 550px;">
+  <div class="card shadow-sm border p-4" style="border-radius: 16px;">
+    <div class="text-center mb-3">
+      <% if (booking.status === 'confirmed') { %>
+        <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: var(--color-success, #198754);"></i>
+        <h2 class="h5 fw-bold mt-2 mb-0">Booking Confirmed</h2>
+      <% } else { %>
+        <i class="fa-solid fa-circle-xmark" style="font-size: 3rem; color: var(--color-error, #dc3545);"></i>
+        <h2 class="h5 fw-bold mt-2 mb-0">Payment Failed</h2>
+      <% } %>
+    </div>
+
+    <table class="table table-sm mt-3" style="font-size: 0.9rem;">
+      <tbody>
+        <tr>
+          <td class="text-muted">Listing</td>
+          <td class="text-end fw-semibold"><%= booking.listing.title %></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Booking ID</td>
+          <td class="text-end"><code><%= booking.id %></code></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Dates</td>
+          <td class="text-end"><%= booking.checkIn.toISOString().slice(0, 10) %> &rarr; <%= booking.checkOut.toISOString().slice(0, 10) %></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Amount</td>
+          <td class="text-end fw-semibold">&#8377;<%= booking.amount.toLocaleString("en-IN") %></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Booking Status</td>
+          <td class="text-end">
+            <span class="badge <%= booking.status === 'confirmed' ? 'bg-success' : 'bg-danger' %>">
+              <%= booking.status %>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="text-muted">Payment Status</td>
+          <td class="text-end">
+            <span class="badge <%= booking.payment.status === 'success' ? 'bg-success' : 'bg-danger' %>">
+              <%= booking.payment.status %>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="text-muted">Payment ID</td>
+          <td class="text-end"><code><%= booking.payment.id %></code></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Date</td>
+          <td class="text-end"><%= booking.createdAt.toLocaleString() %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex gap-3 mt-3">
+      <a href="/listings/<%= booking.listing.id %>" class="btn btn-ghost flex-fill text-center">Back to Listing</a>
+      <a href="/bookings" class="btn btn-primary flex-fill text-center">My Bookings</a>
+    </div>
+  </div>
+</div>
